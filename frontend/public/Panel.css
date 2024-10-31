@@ -1,0 +1,148 @@
+main {
+	width: 100dvw;
+	height: 100dvh;
+	display: grid;
+	grid-template-columns: 3fr 1fr;
+	position: relative;
+	font-family: var(--f-bold);
+	overflow: auto;
+
+	.carousel-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: #0062a3;
+	}
+
+	.info {
+		padding: var(--s-l) var(--s-s);
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-s);
+
+		.logo-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: var(--s-xxl);
+			gap: var(--s-xxs);
+		}
+
+		&.dark {
+			background: var(--text);
+			color: var(--background);
+
+			.logo-container svg * {
+				fill: var(--secondary);
+			}
+
+			.clock {
+				color: var(--secondary);
+			}
+		}
+
+		.clock {
+			color: var(--primary);
+			text-align: center;
+
+			.time {
+				font-weight: 900;
+				font-size: var(--s-xxl);
+			}
+
+			.timetable {
+				margin-top: -0.5em;
+			}
+		}
+
+		.canteen {
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-xs);
+
+			.row {
+				.name {
+					font-weight: 900;
+					display: block;
+				}
+				.meal {
+				}
+			}
+
+			.common-suffix {
+				text-align: center;
+			}
+
+			.no-meals {
+				font-weight: 900;
+				text-align: center;
+			}
+		}
+
+		.divider {
+			width: 50%;
+			background: var(--secondary);
+			height: var(--s-border);
+			margin-inline: auto;
+			border-radius: var(--s-border);
+			opacity: 0.5;
+		}
+
+		.departures-container {
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-xs);
+
+			.departures {
+				display: grid;
+				grid-template-rows: auto auto auto 1fr;
+				gap: var(--s-border) var(--s-xxs);
+				justify-content: start;
+
+				h2 {
+					margin: 0;
+					grid-column: span 3;
+					font-weight: 900;
+				}
+
+				.departure {
+					display: grid;
+					grid-template-columns: subgrid;
+					grid-column: span 4;
+					align-items: center;
+
+					.time {
+						font-weight: 900;
+						display: flex;
+						text-align: right;
+						justify-content: flex-end;
+						gap: var(--s-border);
+					}
+
+					.delay {
+						font-size: 0.7em;
+						font-weight: normal;
+						margin-left: calc(var(--s-xxs) * -1 + 0.2em);
+					}
+
+					.line {
+						font-weight: 700;
+
+						img {
+							height: 1.2em;
+							margin-right: 0.2em;
+							vertical-align: top;
+							margin-block: -0.1em;
+							border-radius: 0.3em;
+							background: var(--background);
+						}
+					}
+
+					.destination {
+					}
+				}
+			}
+		}
+	}
+}
