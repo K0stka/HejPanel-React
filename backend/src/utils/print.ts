@@ -1,6 +1,3 @@
-import "dotenv/config";
-import process from "node:process";
-
 import { bgBrightBlue, bgBrightGreen, bgBrightYellow, black, bold, underline, brightCyan, brightGreen, brightRed, cyan, gray, green, white, yellow, brightBlue, brightYellow } from "https://deno.land/std@0.150.0/fmt/colors.ts";
 
 const printStartupScreen = () => {
@@ -13,12 +10,21 @@ const printStartupScreen = () => {
 
 	console.log();
 
-	console.log(white("┌─────────────────────────────────────────────────────────┐"));
-	console.log(white("│"), cyan("✅ API server running on:      "), bgBrightBlue(black(` ${process.env.BACKEND_URL!}:${process.env.API_PORT!} `)), white("│"));
-	console.log(white("│"), green("✅ WebSocket server running on:"), bgBrightGreen(black(` ${process.env.BACKEND_URL!}:${process.env.WS_PORT!} `)), white("│"));
-	console.log(white("├─────────────────────────────────────────────────────────┤"));
-	console.log(white("│"), yellow("🌐 Expected frontend URL:      "), bgBrightYellow(black(` ${process.env.FRONTEND_URL!}:${process.env.FRONTEND_PORT!} `)), white("│"));
-	console.log(white("└─────────────────────────────────────────────────────────┘"));
+	const backendPort = `${Deno.env.get("API_PORT")}`;
+	const wsPort = `${Deno.env.get("WS_PORT")}`;
+	const frontendUrl = Deno.env.get("FRONTEND_URL")!;
+
+	const maxLength = Math.max(backendPort.length, wsPort.length, frontendUrl.length) + 41;
+
+	const horizontalLine = "─".repeat(maxLength);
+	const emptySpace = (length: number) => " ".repeat(maxLength - length - 41);
+
+	console.log(white(`┌${horizontalLine}┐`));
+	console.log(white("│"), cyan("✅ API server running on port:      "), bgBrightBlue(black(` ${backendPort} `)) + emptySpace(backendPort.length), white("│"));
+	console.log(white("│"), green("✅ WebSocket server running on port:"), bgBrightGreen(black(` ${wsPort} `)) + emptySpace(wsPort.length), white("│"));
+	console.log(white(`├${horizontalLine}┤`));
+	console.log(white("│"), yellow("🌐 Expected frontend URL:           "), bgBrightYellow(black(` ${frontendUrl} `)) + emptySpace(frontendUrl.length), white("│"));
+	console.log(white(`└${horizontalLine}┘`));
 
 	console.log();
 };
@@ -40,6 +46,6 @@ const printWrittenDataToCache = (dataDescription: string) => printMessage("📝"
 const printClearedCache = (dataDescription: string) => printMessage("🗑️", gray(`Cleared old cache for`), bold(underline(dataDescription)));
 
 const printHydratedData = (...dataDescription: string[]) => printMessage("🌊", brightBlue("Hydrated"), dataDescription.map((e) => bold(underline(e))).join(", "));
-const printSentDataToUID = (UID: string, ...dataDescription: string[]) => printMessage("📨", yellow("Sent"), dataDescription.map((e) => bold(underline(e))).join(", "), gray(`to [UID:${UID}]`));
+const printSentDataToUID = (UID: string, ...dataDescription: string[]) => printMessage("📨", brightYellow("Sent"), dataDescription.map((e) => bold(underline(e))).join(", "), gray(`to [UID:${UID}]`));
 
 export { printStartupScreen, printMessage, printServerReady, printConnect, printDisconnect, printFetchedData, printReadDataFromCache, printClearedCache, printWrittenDataToCache, printHydratedData, printSentDataToUID };

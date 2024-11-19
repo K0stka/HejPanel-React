@@ -1,4 +1,4 @@
-import { Panel } from "../../../../shared/panel";
+import { Panel } from "shared";
 
 interface Props {
 	panel: Panel;
@@ -11,7 +11,7 @@ const PanelElement = ({ panel }: Props) => {
 		case "image":
 			return (
 				<img
-					src={panel.url}
+					src={panel.content}
 					alt="panel"
 				/>
 			);

@@ -1,4 +1,4 @@
-import { Departure } from "../../../../shared/panel";
+import { Departure } from "shared";
 import CarrierIcon from "./carrierIcon";
 
 interface Props {

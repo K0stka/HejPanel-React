@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Canteen, Departures, Panel } from "../../../shared/panel";
+import { Canteen, Departures, Panel } from "shared";
 
 const PanelsContext = createContext<Panel[]>([]);
 const CanteenContext = createContext<Canteen>({} as Canteen);

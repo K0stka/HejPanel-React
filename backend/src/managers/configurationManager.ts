@@ -1,7 +1,7 @@
-import db from "../db/connection.ts";
+import db from "../db/connector.ts";
 
-import type { Configuration, Theme } from "../../../shared/panel.d.ts";
-import { configTable } from "../db/schema.ts";
+import type { Configuration, Theme } from "shared/types";
+import { config } from "../db/schema.ts";
 import { printReadDataFromCache, printWrittenDataToCache } from "../utils/print.ts";
 
 type ConfigurationChangeCallbacks = {
@@ -25,18 +25,18 @@ export default class ConfigurationManager {
 	}
 
 	public async init() {
-		let config = await db.query.configTable.findFirst();
+		let configuration = await db.query.config.findFirst();
 
-		if (!config) {
-			config = this.defaultConfiguration;
-			await db.insert(configTable).values(config).execute();
+		if (!configuration) {
+			configuration = this.defaultConfiguration;
+			await db.insert(config).values(configuration).execute();
 		}
 
 		this.configuration = {
-			theme: config.theme as Theme,
-			timetableEnabled: config.timetableEnabled,
-			canteenEnabled: config.canteenEnabled,
-			departuresEnabled: config.departuresEnabled,
+			theme: configuration.theme as Theme,
+			timetableEnabled: configuration.timetableEnabled,
+			canteenEnabled: configuration.canteenEnabled,
+			departuresEnabled: configuration.departuresEnabled,
 		};
 
 		this.loaded = true;
@@ -68,7 +68,7 @@ export default class ConfigurationManager {
 		if (this.configuration.theme === value) return;
 
 		this.configuration.theme = value;
-		db.update(configTable).set({ theme: value }).execute();
+		db.update(config).set({ theme: value }).execute();
 
 		printWrittenDataToCache("theme");
 
@@ -89,7 +89,7 @@ export default class ConfigurationManager {
 		if (this.configuration.timetableEnabled === value) return;
 
 		this.configuration.timetableEnabled = value;
-		db.update(configTable).set({ timetableEnabled: value }).execute();
+		db.update(config).set({ timetableEnabled: value }).execute();
 
 		printWrittenDataToCache("timetableEnabled");
 
@@ -110,7 +110,7 @@ export default class ConfigurationManager {
 		if (this.configuration.canteenEnabled === value) return;
 
 		this.configuration.canteenEnabled = value;
-		db.update(configTable).set({ canteenEnabled: value }).execute();
+		db.update(config).set({ canteenEnabled: value }).execute();
 
 		printWrittenDataToCache("canteenEnabled");
 
@@ -131,7 +131,7 @@ export default class ConfigurationManager {
 		if (this.configuration.departuresEnabled === value) return;
 
 		this.configuration.departuresEnabled = value;
-		db.update(configTable).set({ departuresEnabled: value }).execute();
+		db.update(config).set({ departuresEnabled: value }).execute();
 
 		printWrittenDataToCache("departuresEnabled");
 

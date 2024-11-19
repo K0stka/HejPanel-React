@@ -1,8 +1,8 @@
-import db from "../db/connection.ts";
-import { canteenTable } from "../db/schema.ts";
+import db from "../db/connector.ts";
+import { canteens } from "../db/schema.ts";
 import { eq, lt } from "drizzle-orm";
 
-import type { Canteen } from "../../../panel.d.ts";
+import type { Canteen } from "shared/types";
 import fetchCanteens from "../crawlers/fetchCanteens.ts";
 import { printClearedCache, printReadDataFromCache, printWrittenDataToCache } from "../utils/print.ts";
 
@@ -17,11 +17,11 @@ export default class CanteenManager {
 		setInterval(() => {
 			const now = new Date();
 			if (now.getDate() !== (this.lastVisibleCanteenDate ?? now).getDate()) this.onVisibleCanteenChange();
-		}, 1000); //3_600_000);
+		}, 300_000);
 	}
 
 	public async init() {
-		await db.delete(canteenTable).where(lt(canteenTable.date, new Date())).execute();
+		await db.delete(canteens).where(lt(canteens.date, new Date())).execute();
 
 		printClearedCache("canteen");
 
@@ -29,14 +29,19 @@ export default class CanteenManager {
 	}
 
 	public async getCanteen(date: Date): Promise<Canteen> {
+		if (date.getDay() === 0 || date.getDay() === 6) {
+			printReadDataFromCache("canteen");
+			return { snack: null, soup: null, lunch1: null, lunch2: null, lunch3: null, commonSuffix: null };
+		}
+
 		if (this.canteens.has(date.toDateString())) {
 			printReadDataFromCache("canteen", false);
 
 			return this.canteens.get(date.toDateString())!;
 		}
 
-		const canteen = await db.query.canteenTable.findFirst({
-			where: eq(canteenTable.date, date),
+		const canteen = await db.query.canteens.findFirst({
+			where: eq(canteens.date, date),
 		});
 
 		if (canteen) {
@@ -58,12 +63,12 @@ export default class CanteenManager {
 			commonSuffix: null,
 		};
 		for (const fetchedCanteen of fetchedCanteens) {
-			const existingCanteen = await db.query.canteenTable.findFirst({
-				where: eq(canteenTable.date, fetchedCanteen.date),
+			const existingCanteen = await db.query.canteens.findFirst({
+				where: eq(canteens.date, fetchedCanteen.date),
 			});
 
 			if (!existingCanteen) {
-				await db.insert(canteenTable).values({
+				await db.insert(canteens).values({
 					date: fetchedCanteen.date,
 					...fetchedCanteen.canteen,
 				});

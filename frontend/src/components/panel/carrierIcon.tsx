@@ -1,4 +1,4 @@
-import { Departure } from "../../../../shared/panel";
+import { Departure } from "shared";
 
 interface Props {
 	carrier: Departure["carrier"];
@@ -10,21 +10,21 @@ const CarrierIcon = ({ carrier }: Props) => {
 			case "CD":
 				return (
 					<img
-						src="/carriers/cd.png"
+						src="carriers/cd.png"
 						alt="CD"
 					/>
 				);
 			case "DPMO":
 				return (
 					<img
-						src="/carriers/dpmo.png"
+						src="carriers/dpmo.png"
 						alt="DPMO"
 					/>
 				);
 			case "other":
 				return (
 					<img
-						src="/carriers/other.png"
+						src="carriers/other.png"
 						alt="Other"
 					/>
 				);

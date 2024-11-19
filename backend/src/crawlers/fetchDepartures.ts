@@ -1,5 +1,5 @@
 import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.48/deno-dom-wasm.ts";
-import type { Departure, Departures } from "../../../shared/panel.d.ts";
+import type { Departure, Departures } from "shared/types";
 import { printFetchedData } from "../utils/print.ts";
 
 const fetchDeparturesFromURL = async (url: string, numberOfElements: number): Promise<Departure[]> => {

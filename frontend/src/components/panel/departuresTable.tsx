@@ -5,7 +5,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { DeparturesContext } from "../../util/context";
 
 import DepartureRow from "./departureRow";
-import { Departures } from "../../../../shared/panel";
+import { Departures } from "shared";
 
 const DeparturesTable = () => {
 	const departures: Departures = useContext(DeparturesContext);

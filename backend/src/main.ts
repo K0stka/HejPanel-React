@@ -2,23 +2,23 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { Server } from "https://deno.land/x/socket_io@0.2.0/mod.ts";
 import { Application, Router } from "https://deno.land/x/oak@v17.1.0/mod.ts";
 
-import "dotenv/config";
-import process from "node:process";
+import "jsr:@std/dotenv/load";
 
 import { printConnect, printDisconnect, printHydratedData, printSentDataToUID, printServerReady, printStartupScreen } from "./utils/print.ts";
 
-import { themes, type Departures } from "../../shared/panel.d.ts";
+import { themes } from "shared/constants";
+import type { Departures } from "shared/types";
 import fetchDepartures from "./crawlers/fetchDepartures.ts";
 import ConfigurationManager from "./managers/configurationManager.ts";
 import CanteenManager from "./managers/canteenManager.ts";
 import setInstantInterval from "./utils/functions.ts";
-// import PanelsManager from "./panelsManager.ts";
+import PanelsManager from "./managers/panelsManager.ts";
 
 console.clear();
 
 const io = new Server({
 	cors: {
-		origin: `${process.env.FRONTEND_URL!}:${process.env.FRONTEND_PORT!}`,
+		origin: `${Deno.env.get("FRONTEND_URL")}`,
 	},
 });
 
@@ -92,14 +92,10 @@ const canteen = new CanteenManager(async () => {
 let departures: Departures = { ladova: [], natrati: [], vlak: null };
 let departuresRefresh: number | null = null;
 
-// const Panels = new PanelsManager(
-// 	(panel) => {
-// 		socket.emit("panel:add", panel);
-// 	},
-// 	(panelId) => {
-// 		socket.emit("panel:remove", panelId);
-// 	}
-// );
+const panels = new PanelsManager(
+	(panel) => io.emit("panel:add", panel),
+	(panelId) => io.emit("panel:remove", panelId)
+);
 
 router.post("/theme", (context) => {
 	const theme = context.request.url.searchParams.get("theme");
@@ -133,34 +129,24 @@ router.post("/departures", (context) => {
 	context.response.status = 200;
 });
 
-// router.get("/debug", async (context) => {
-// 	const requestDetails = {
-// 		method: context.request.method,
-// 		url: context.request.url.toString(),
-// 		headers: Object.fromEntries(context.request.headers.entries()),
-// 		body: await context.request.body.text(),
-// 	};
-// 	context.response.headers.set("Content-Type", "application/json");
-// 	context.response.body = JSON.stringify(requestDetails, null, 2);
-// 	context.response.status = 200;
-// });
-
 // #region Server startup...
 printStartupScreen();
 
-Promise.all([configuration.init(), canteen.init()]).then(() => {
-	printServerReady();
-	Promise.any([
-		new Application()
-			.use(router.routes())
-			.use(router.allowedMethods())
-			.listen({
-				port: parseInt(process.env.API_PORT!),
+Promise.all([configuration.init(), panels.init()])
+	.then(() => (configuration.canteenEnabled ? canteen.init() : null))
+	.then(() => {
+		printServerReady();
+		Promise.any([
+			new Application()
+				.use(router.routes())
+				.use(router.allowedMethods())
+				.listen({
+					port: parseInt(Deno.env.get("API_PORT")!),
+				}),
+			serve(io.handler(), {
+				port: parseInt(Deno.env.get("WS_PORT")!),
+				onListen: () => null,
 			}),
-		serve(io.handler(), {
-			port: parseInt(process.env.WS_PORT!),
-			onListen: () => null,
-		}),
-	]);
-});
+		]);
+	});
 // #endregion

@@ -1,6 +1,11 @@
 import { relations, sql } from "drizzle-orm";
 import { boolean, date, integer, pgEnum, pgTable, varchar, json } from "drizzle-orm/pg-core";
-import { activityTypes, panelTypes, themes } from "../../../shared/constants.ts";
+
+//TODO: Fix
+// import { activityTypes, panelTypes, themes } from "shared/constants";
+export const panelTypes = ["text", "image"] as const;
+export const activityTypes = ["admin:accept", "admin:reject", "message", "user:request:addPanel", "user:request:changeTime", "user:request:changeContent"] as const;
+export const themes = ["normal", "dark", "light"] as const;
 
 export const themeEnum = pgEnum("theme", themes);
 

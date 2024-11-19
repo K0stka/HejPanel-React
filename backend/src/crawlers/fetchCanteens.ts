@@ -1,4 +1,4 @@
-import type { Canteen, Either } from "../../../shared/panel.d.ts";
+import type { Canteen, Either } from "shared/types";
 import { printFetchedData } from "../utils/print.ts";
 
 const fetchCanteens = async (): Promise<{ date: Date; canteen: Canteen }[]> => {

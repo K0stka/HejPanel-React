@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { socket } from "../socket";
-import { Canteen, Departures, Panel, ClientState, Theme } from "../../../shared/panel";
+import { socket } from "./socket";
+import { Canteen, Departures, Panel, ClientState, Theme } from "shared";
 
 export default function getClientState(): ClientState {
 	const [online, setOnline] = useState(socket.connected);
@@ -32,6 +32,7 @@ export default function getClientState(): ClientState {
 		const onConnect = () => setOnline(true);
 		const onDisconnect = () => setOnline(false);
 
+		const onPanelSync = (newPanels: Panel[]) => setPanels(newPanels);
 		const onPanelAdd = (panel: Panel) => setPanels((panels) => [...panels, panel]);
 		const onPanelRemove = (panelId: number) => setPanels((panels) => panels.filter((p) => p.id !== panelId));
 
@@ -57,6 +58,7 @@ export default function getClientState(): ClientState {
 		socket.on("connect", onConnect);
 		socket.on("disconnect", onDisconnect);
 
+		socket.on("panel:sync", onPanelSync);
 		socket.on("panel:add", onPanelAdd);
 		socket.on("panel:remove", onPanelRemove);
 
@@ -76,6 +78,7 @@ export default function getClientState(): ClientState {
 			socket.off("connect", onConnect);
 			socket.off("disconnect", onDisconnect);
 
+			socket.off("panel:sync", onPanelSync);
 			socket.off("panel:add", onPanelAdd);
 			socket.off("panel:remove", onPanelRemove);
 

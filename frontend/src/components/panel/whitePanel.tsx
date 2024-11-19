@@ -1,4 +1,4 @@
-import { ClientState } from "../../../../shared/panel";
+import { ClientState } from "shared";
 
 import CanteenTable from "./canteen";
 import DeparturesTable from "./departuresTable";
