@@ -18,7 +18,7 @@ console.clear();
 
 const io = new Server({
 	cors: {
-		origin: `${Deno.env.get("FRONTEND_URL")}`,
+		origin: [Deno.env.get("FRONTEND_URL")!, Deno.env.get("ADMIN_URL")!],
 	},
 });
 
@@ -100,12 +100,14 @@ const panels = new PanelsManager(
 router.post("/theme", (context) => {
 	const theme = context.request.url.searchParams.get("theme");
 
-	if (theme && themes.includes(theme)) {
-		configuration.theme = theme;
-		context.response.status = 200;
-	} else {
-		context.response.status = 400;
-	}
+	themes.forEach((t) => {
+		if (t === theme) {
+			configuration.theme = theme;
+			context.response.status = 200;
+		}
+	});
+
+	context.response.status = 400;
 });
 
 router.post("/timetable", (context) => {

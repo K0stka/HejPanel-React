@@ -2,10 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import { boolean, date, integer, pgEnum, pgTable, varchar, json } from "drizzle-orm/pg-core";
 
 //TODO: Fix
-// import { activityTypes, panelTypes, themes } from "shared/constants";
-export const panelTypes = ["text", "image"] as const;
-export const activityTypes = ["admin:accept", "admin:reject", "message", "user:request:addPanel", "user:request:changeTime", "user:request:changeContent"] as const;
-export const themes = ["normal", "dark", "light"] as const;
+import { activityTypes, panelTypes, themes, userTypes } from "@/lib/constants";
 
 export const themeEnum = pgEnum("theme", themes);
 
@@ -27,9 +24,13 @@ export const canteens = pgTable("canteen", {
 	commonSuffix: varchar("common_suffix", { length: 255 }),
 });
 
+export const userTypesEnum = pgEnum("user_type", userTypes);
+
 export const users = pgTable("users", {
 	id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
 	name: varchar("name", { length: 255 }).notNull(),
+	email: varchar("email", { length: 255 }).notNull().unique(),
+	type: userTypesEnum("type").notNull().default(userTypes[0]),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

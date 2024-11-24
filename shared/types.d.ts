@@ -1,8 +1,10 @@
-import { activityTypes, panelTypes, themes } from "./constants";
+import { userTypes, activityTypes, panelTypes, themes } from "../admin/lib/constants";
 
 export type User = {
 	id: number;
 	name: string;
+	email: string;
+	type: (typeof userTypes)[number];
 };
 
 export type UserOrId = User | number;

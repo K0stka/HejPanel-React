@@ -1,6 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import { boolean, date, integer, pgEnum, pgTable, varchar, json } from "drizzle-orm/pg-core";
-import { activityTypes, panelTypes, themes } from "../../../shared/constants.ts";
+import { activityTypes, panelTypes, themes, userTypes } from "../../../admin/lib/constants.ts";
 
 export const themeEnum = pgEnum("theme", themes);
 
@@ -22,9 +22,13 @@ export const canteens = pgTable("canteen", {
 	commonSuffix: varchar("common_suffix", { length: 255 }),
 });
 
+export const userTypesEnum = pgEnum("user_type", userTypes);
+
 export const users = pgTable("users", {
 	id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
 	name: varchar("name", { length: 255 }).notNull(),
+	email: varchar("email", { length: 255 }).notNull().unique(),
+	type: userTypesEnum("type").notNull().default(userTypes[0]),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
