@@ -6,7 +6,12 @@
 	},
 	"imports": {
 		"@std/assert": "jsr:@std/assert@1",
-		"shared/types": "../shared/types.d.ts",
-		"shared/constants": "../admin/lib/constants.ts"
+		"shared/types": "../shared/lib/types.d.ts",
+		"shared/constants": "../shared/lib/constants.ts",
+		"shared/db": "../shared/db/connector.ts",
+		"shared/schema": "../shared/db/schema.ts",
+		"orm": "../shared/db/orm.ts",
+		"drizzle-orm": "npm:drizzle-orm",
+		"pg": "npm:pg"
 	}
 }

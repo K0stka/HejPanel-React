@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "dev": "next dev",
+    "build": "next build",
+    "deploy": "next start",
+    "lint": "next lint"
+  },
+  "unstable": ["unsafe-proto"]
+}

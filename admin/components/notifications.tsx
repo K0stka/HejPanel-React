@@ -1,34 +1,35 @@
-"use client";
+import { desc, eq } from "shared/orm";
 
-import Connection from "@/lib/socket";
-import { useEffect, useState } from "react";
+import db from "shared/db";
+import { getSessionUserInfo } from "@/auth/session-hooks";
+import { notifications } from "shared/schema";
 
-const SocketTest = () => {
-	const [isConnected, setIsConnected] = useState(false);
+const Notifications = async () => {
+  const user = await getSessionUserInfo();
 
-	useEffect(() => {
-		const onConnect = () => setIsConnected(true);
-		const onDisconnect = () => setIsConnected(false);
-		const onReceivedMessage = (message: any) => alert(message);
+  const notificationsList = await db.query.notifications.findMany({
+    where: eq(notifications.recipient, user.id),
+    orderBy: desc(notifications.sentAt),
+    limit: 10,
+  });
 
-		Connection.on("connect", onConnect);
-		Connection.on("disconnect", onDisconnect);
-		Connection.on("message", onReceivedMessage);
-
-		return () => {
-			Connection.off("connect", onConnect);
-			Connection.off("disconnect", onDisconnect);
-			Connection.off("message", onReceivedMessage);
-		};
-	});
-
-	return (
-		<>
-			<p>Connected: {isConnected ? "Yes" : "No"}</p>
-			<p>Socket ID: {Connection.id}</p>
-			<button onClick={() => Connection.emit("message", "Hello!")}>Send message</button>
-		</>
-	);
+  return (
+    <>
+      {notificationsList.map((notification) => (
+        <span key={notification.id}>
+          <br />
+          <br />
+          <span>{notification.title}</span>
+          <br />
+          <span>{notification.content}</span>
+          <br />
+          <span>{notification.sentAt.toLocaleDateString()}</span>
+          <br />
+          <span>{notification.read ? "Read" : "Unread"}</span>
+        </span>
+      ))}
+    </>
+  );
 };
 
-export default SocketTest;
+export default Notifications;

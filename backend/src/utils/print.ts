@@ -12,7 +12,8 @@ const printStartupScreen = () => {
 
 	const backendPort = `${Deno.env.get("API_PORT")}`;
 	const wsPort = `${Deno.env.get("WS_PORT")}`;
-	const frontendUrl = Deno.env.get("FRONTEND_URL")!;
+	const frontendUrl = Deno.env.get("PANEL_URL")!;
+	const adminUrl = Deno.env.get("ADMIN_URL")!;
 
 	const maxLength = Math.max(backendPort.length, wsPort.length, frontendUrl.length) + 41;
 
@@ -24,6 +25,7 @@ const printStartupScreen = () => {
 	console.log(white("│"), green("✅ WebSocket server running on port:"), bgBrightGreen(black(` ${wsPort} `)) + emptySpace(wsPort.length), white("│"));
 	console.log(white(`├${horizontalLine}┤`));
 	console.log(white("│"), yellow("🌐 Expected frontend URL:           "), bgBrightYellow(black(` ${frontendUrl} `)) + emptySpace(frontendUrl.length), white("│"));
+	console.log(white("│"), yellow("🌐 Expected admin URL:              "), bgBrightYellow(black(` ${adminUrl} `)) + emptySpace(adminUrl.length), white("│"));
 	console.log(white(`└${horizontalLine}┘`));
 
 	console.log();

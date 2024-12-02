@@ -1,48 +1,20 @@
 @import "normalize.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-	--text: #010a0f;
-	--background: #f2fafe;
-	--primary: #0062a3;
-	--secondary: #8bbcdc;
-	--accent: #f1c74a;
-	--primary-active: #064c7b;
-	--secondary-active: #64a5cf;
-	--accent-active: #e3b93c;
+  /* Font faces - hydrated from Next.js */
+  --f-nunito: "Nunito";
+  --f-hepta-slab: "Hepta Slab";
+}
 
-	/* (https://anice.red/) */
-	--success: #99e052;
-	--success-active: #bbfb7a;
-	--error: #ee2b34;
-	--error-active: #ff5058;
+.nunito {
+  font-family: var(--f-nunito);
+}
 
-	/* Monotone - normal/accent/text */
-	--mt: hsl(0, 0%, 40%);
-	--m0: hsl(0, 0%, 90%);
-	--m1: hsl(0, 0%, 80%);
-	--m2: hsl(0, 0%, 70%);
-	--m3: hsl(0, 0%, 60%);
-
-	/* Transitions */
-	--t: 0.3s ease-in-out;
-
-	/* Font faces - hydrated from Next.js */
-	--f-nunito: "Nunito";
-	--f-nunito-bold: "Nunito";
-	--f-hepta-slab: "Hepta Slab";
-	--f-hepta-slab-bold: "Hepta Slab";
-
-	/* Sizes */
-	--s-xxs: 0.6rem;
-	--s-xs: 18px;
-	--s-s: 1.33rem;
-	--s-m: 1.777rem;
-	--s-l: 2.369rem;
-	--s-xl: 3.158rem;
-	--s-xxl: 4.21rem;
-
-	--s-border: 3px;
-	--s-scroll: 8px;
+.hepta-slab {
+  font-family: var(--f-hepta-slab);
 }
 
 /*
@@ -50,67 +22,117 @@
  */
 html,
 body {
-	width: 100dvw;
-	min-height: 100dvh;
-	margin: 0;
-	padding: 0;
-	position: relative;
-	overflow: auto;
+  width: 100dvw;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow: auto;
 }
 
 body {
-	color: var(--text);
-	background: var(--background);
-	font-size: var(--s-xs);
-	font-family: var(--f-hepta-slab);
-}
-
-h1 {
-	font-size: var(--s-m);
-}
-h2 {
-	font-size: var(--s-s);
-}
-h3 {
-	font-size: var(--s-xs);
-}
-h4 {
-	font-size: var(--s-xxs);
+  font-family: var(--f-hepta-slab);
 }
 
 svg {
-	height: 1em;
+  height: 1em;
+  vertical-align: middle;
+  display: inline-block;
 }
 
 /*
 	Scrollbar
  */
 * {
-	--scroll-width: var(--s-scroll);
-	--scroll-thumb: #00000030;
-	--scroll-track: #0000000d;
+  --scroll-width: 8px;
+  --scroll-thumb: #00000030;
+  --scroll-track: #0000000d;
 }
 
 *:hover {
-	--scroll-thumb: #0000006b;
-	--scroll-track: #0000001a;
+  --scroll-thumb: #0000006b;
+  --scroll-track: #0000001a;
 }
 
 *::-webkit-scrollbar {
-	width: var(--scroll-width);
-	height: var(--scroll-width);
+  width: var(--scroll-width);
+  height: var(--scroll-width);
 }
 
 *::-webkit-scrollbar-thumb {
-	background: var(--scroll-thumb);
-	border-radius: var(--scroll-width);
+  background: var(--scroll-thumb);
+  border-radius: var(--scroll-width);
 }
 
 *::-webkit-scrollbar-track {
-	background: var(--scroll-track);
-	border-radius: var(--scroll-width);
+  background: var(--scroll-track);
+  border-radius: var(--scroll-width);
 }
 
 *::-webkit-scrollbar-corner {
-	background: transparent;
+  background: transparent;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

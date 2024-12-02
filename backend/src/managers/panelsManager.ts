@@ -1,7 +1,7 @@
-import db from "../db/connector.ts";
-import { and, eq, gte, lte } from "drizzle-orm";
+import db from "shared/db";
+import { panels, users } from "shared/schema";
+import { and, eq, gte, lte } from "orm";
 import type { Panel } from "shared/types";
-import { panels, users } from "../db/schema.ts";
 
 export default class PanelsManager {
 	private onPanelAddCallback: (panel: Panel) => void;

@@ -1,7 +1,9 @@
-export const userTypes = ["user", "admin"] as const;
+import { panelTypes } from "shared/constants";
+import z from "zod";
 
-export const panelTypes = ["text", "image"] as const;
-
-export const activityTypes = ["admin:accept", "admin:reject", "message", "user:request:addPanel", "user:request:changeTime", "user:request:changeContent"] as const;
-
-export const themes = ["normal", "dark", "light"] as ["normal", "dark", "light"];
+export const AddPanelFormSchema = z.object({
+  type: z.enum(panelTypes),
+  showFrom: z.date(),
+  showTill: z.date(),
+  content: z.string().optional(),
+});

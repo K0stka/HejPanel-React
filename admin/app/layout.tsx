@@ -4,23 +4,25 @@ import { NextLayout } from "@/lib/types";
 
 import "./globals.css";
 
-import { heptaSlab, heptaSlabBold, nunito, nunitoBold } from "@/assets/fonts";
-import Header from "@/components/header";
+import { nunito, heptaSlab } from "@/assets/fonts";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
 export const metadata: Metadata = {
-	title: "HejPanel",
-	description: "Projekt SRGH sloužící pro rychlou a efektivní distribuci informací mezi studenty a vyučujícími.",
+  title: "HejPanel",
+  description:
+    "Projekt SRGH sloužící pro rychlou a efektivní distribuci informací mezi studenty a vyučujícími.",
 };
 
 const Layout: NextLayout = ({ children }) => {
-	return (
-		<html lang="cs">
-			<body className={`${nunito.variable} ${nunitoBold.variable} ${heptaSlab.variable} ${heptaSlabBold.variable}`}>
-				<Header />
-				<main>{children}</main>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="cs" suppressHydrationWarning>
+      <body className={`${nunito.variable} ${heptaSlab.variable}`}>
+        <ThemeProvider defaultTheme="system" attribute="class">
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 };
 
 export default Layout;

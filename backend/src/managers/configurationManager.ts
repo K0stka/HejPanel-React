@@ -1,7 +1,7 @@
-import db from "../db/connector.ts";
+import db from "shared/db";
 
 import type { Configuration, Theme } from "shared/types";
-import { config } from "../db/schema.ts";
+import { config } from "shared/schema";
 import { printReadDataFromCache, printWrittenDataToCache } from "../utils/print.ts";
 
 type ConfigurationChangeCallbacks = {
@@ -17,7 +17,7 @@ export default class ConfigurationManager {
 
 	private readonly onChangeCallbacks: ConfigurationChangeCallbacks;
 
-	private readonly defaultConfiguration = { theme: "normal", timetableEnabled: false, canteenEnabled: false, departuresEnabled: false };
+	private readonly defaultConfiguration: Configuration = { theme: "normal", timetableEnabled: false, canteenEnabled: false, departuresEnabled: false };
 
 	constructor(callbacks: ConfigurationChangeCallbacks) {
 		this.configuration = this.defaultConfiguration;
@@ -25,18 +25,17 @@ export default class ConfigurationManager {
 	}
 
 	public async init() {
-		let configuration = await db.query.config.findFirst();
+		const configuration = await db.query.config.findFirst();
 
 		if (!configuration) {
-			configuration = this.defaultConfiguration;
-			await db.insert(config).values(configuration).execute();
+			await db.insert(config).values(this.defaultConfiguration).execute();
 		}
 
 		this.configuration = {
-			theme: configuration.theme as Theme,
-			timetableEnabled: configuration.timetableEnabled,
-			canteenEnabled: configuration.canteenEnabled,
-			departuresEnabled: configuration.departuresEnabled,
+			theme: configuration?.theme ?? this.defaultConfiguration.theme,
+			timetableEnabled: configuration?.timetableEnabled ?? this.defaultConfiguration.timetableEnabled,
+			canteenEnabled: configuration?.canteenEnabled ?? this.defaultConfiguration.canteenEnabled,
+			departuresEnabled: configuration?.departuresEnabled ?? this.defaultConfiguration.departuresEnabled,
 		};
 
 		this.loaded = true;

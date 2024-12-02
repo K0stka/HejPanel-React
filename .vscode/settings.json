@@ -1,4 +1,5 @@
 {
-	"cSpell.words": ["ARRIVA", "clsx", "DPMO", "formkit", "gytool", "natrati", "nunito", "SRGH", "turbopack", "VOJTILA"],
-	"explorer.compactFolders": false
+	"cSpell.words": ["ARRIVA", "clsx", "DPMO", "entra", "FEJJCC", "formkit", "gytool", "natrati", "NEXTAUTH", "nunito", "sonner", "SRGH", "turbopack", "VOJTILA", "nunito", "sonner", "SRGH", "turbopack"],
+	"explorer.compactFolders": false,
+	"deno.disablePaths": ["admin"]
 }

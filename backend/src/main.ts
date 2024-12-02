@@ -18,7 +18,7 @@ console.clear();
 
 const io = new Server({
 	cors: {
-		origin: [Deno.env.get("FRONTEND_URL")!, Deno.env.get("ADMIN_URL")!],
+		origin: [Deno.env.get("PANEL_URL")!, Deno.env.get("ADMIN_URL")!],
 	},
 });
 
@@ -96,6 +96,15 @@ const panels = new PanelsManager(
 	(panel) => io.emit("panel:add", panel),
 	(panelId) => io.emit("panel:remove", panelId)
 );
+
+router.get("/", (context) => {
+	context.response.body = {
+		name: "HejPanel API",
+		version: "1.0.0",
+		status: "running",
+		message: "All systems nominal ✅👍🔥😉",
+	};
+});
 
 router.post("/theme", (context) => {
 	const theme = context.request.url.searchParams.get("theme");

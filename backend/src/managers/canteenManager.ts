@@ -1,6 +1,6 @@
-import db from "../db/connector.ts";
-import { canteens } from "../db/schema.ts";
-import { eq, lt } from "drizzle-orm";
+import db from "shared/db";
+import { eq, lt } from "orm";
+import { canteens } from "shared/schema";
 
 import type { Canteen } from "shared/types";
 import fetchCanteens from "../crawlers/fetchCanteens.ts";

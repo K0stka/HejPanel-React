@@ -1,0 +1,68 @@
+@import "normalize.css";
+
+html,
+body {
+	width: 100dvw;
+	min-height: 100dvh;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	overflow: auto;
+}
+
+body {
+	color: var(--text);
+	background: var(--background);
+	font-size: var(--s-xs);
+	font-family: var(--f-light);
+}
+
+h1 {
+	font-size: var(--s-m);
+}
+h2 {
+	font-size: var(--s-s);
+}
+h3 {
+	font-size: var(--s-xs);
+}
+h4 {
+	font-size: var(--s-xxs);
+}
+
+svg {
+	height: 1em;
+}
+
+/*
+	Scrollbar
+ */
+* {
+	--scroll-width: var(--s-scroll);
+	--scroll-thumb: #00000030;
+	--scroll-track: #0000000d;
+}
+
+*:hover {
+	--scroll-thumb: #0000006b;
+	--scroll-track: #0000001a;
+}
+
+*::-webkit-scrollbar {
+	width: var(--scroll-width);
+	height: var(--scroll-width);
+}
+
+*::-webkit-scrollbar-thumb {
+	background: var(--scroll-thumb);
+	border-radius: var(--scroll-width);
+}
+
+*::-webkit-scrollbar-track {
+	background: var(--scroll-track);
+	border-radius: var(--scroll-width);
+}
+
+*::-webkit-scrollbar-corner {
+	background: transparent;
+}

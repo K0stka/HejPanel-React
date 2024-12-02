@@ -7,7 +7,7 @@ const fetchCanteens = async (): Promise<{ date: Date; canteen: Canteen }[]> => {
 		headers: {
 			"Content-Type": "text/plain",
 		},
-		body: '{"cislo":"1692"}',
+		body: '{"cislo":"1692","s5url":"https://wss5.strava.cz/WSStravne5/WSStravne5.svc"}',
 	}).then((response) => response.json());
 
 	if (canteenResponse.state === "error" || typeof canteenResponse[0] === "undefined" || canteenResponse[0].length === 0) {

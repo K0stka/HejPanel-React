@@ -1,90 +1,74 @@
 import "server-only";
 
-import type { SessionUserRecord } from "@/lib/types";
-
 import { SignJWT, jwtVerify } from "jose";
 
+import { SessionUserRecord } from "@/lib/types";
 import { cache } from "react";
-
 import { cookies } from "next/headers";
+import { env } from "@/env";
 import { redirect } from "next/navigation";
 
-import { User } from "shared";
-import { userTypes } from "@/lib/constants";
+const encodedKey = new TextEncoder().encode(env.AUTH_SECRET);
 
-const secretKey = process.env.SECRET ?? "key";
-export const key = new TextEncoder().encode(secretKey);
+const session_cookie_name = "session";
+const session_cookie_max_age = 1000 * 60 * 60 * 24 * 7; // 1 week
 
-const session_cookie = "session";
-const session_lifetime = 60 * 60 * 24 * 7 * 1000;
-const session_lifetime_string = "7d";
+export async function setSessionUser(user: SessionUserRecord) {
+  const cookieStore = await cookies();
 
-function encrypt(payload: SessionUserRecord): Promise<string> {
-	return new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setIssuedAt().setExpirationTime(session_lifetime_string).sign(key);
+  const expiresAt = new Date(Date.now() + session_cookie_max_age);
+  const cookie = await encryptSessionUser(user);
+
+  cookieStore.set(session_cookie_name, cookie, {
+    httpOnly: true,
+    secure: true,
+    expires: expiresAt,
+    sameSite: "lax",
+    path: "/",
+  });
+
+  redirect("/");
 }
 
-async function decrypt(session: string | undefined = ""): Promise<SessionUserRecord | null> {
-	if (!session) return null;
+export const getSessionUserRecord: () => Promise<SessionUserRecord | null> =
+  cache(async () => {
+    const cookieStore = await cookies();
+    const cookie = cookieStore.get(session_cookie_name)?.value;
 
-	try {
-		const { payload } = await jwtVerify(session, key, {
-			algorithms: ["HS256"],
-		});
+    if (!cookie) return null;
 
-		if (typeof payload.id !== "number" || !userTypes.includes(payload?.type as User["type"])) return null;
+    return decryptSessionUser(cookie);
+  });
 
-		return {
-			id: payload.id,
-			type: payload.type as User["type"],
-		};
-	} catch (error) {
-		return null;
-	}
+export async function removeSessionUser() {
+  const cookieStore = await cookies();
+  cookieStore.delete(session_cookie_name);
+
+  redirect("/");
 }
 
-export async function setSession(user: User) {
-	const expiresAt = new Date(Date.now() + session_lifetime);
-	const session = await encrypt({
-		id: user.id,
-		type: user.type,
-	});
-
-	(await cookies()).set(session_cookie, session, {
-		httpOnly: true,
-		secure: true,
-		expires: expiresAt,
-		sameSite: "strict",
-		path: "/",
-	});
-
-	redirect("/");
+async function encryptSessionUser(user: SessionUserRecord): Promise<string> {
+  // @ts-ignore
+  return new SignJWT(user)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(encodedKey);
 }
 
-export const getSession = cache(async (): Promise<SessionUserRecord | null> => {
-	const cookie = (await cookies()).get(session_cookie)?.value;
-	const session = await decrypt(cookie);
+async function decryptSessionUser(
+  session: string,
+): Promise<SessionUserRecord | null> {
+  try {
+    const { payload } = await jwtVerify(session, encodedKey, {
+      algorithms: ["HS256"],
+    });
 
-	if (!session) return null;
-
-	return session;
-});
-
-export async function updateSession() {
-	const session = (await cookies()).get(session_cookie)?.value;
-
-	if (!session) return;
-
-	(await cookies()).set(session_cookie, session, {
-		httpOnly: true,
-		secure: true,
-		expires: new Date(Date.now() + session_lifetime),
-		sameSite: "strict",
-		path: "/",
-	});
-}
-
-export async function deleteSession() {
-	(await cookies()).delete(session_cookie);
-
-	redirect("/");
+    return {
+      id: payload.id,
+      type: payload.type,
+    };
+  } catch (error) {
+    return null;
+  }
 }
