@@ -1,6 +1,4 @@
 import Clock from "./clock";
-import GytoolLogo from "../logos/gytoolLogo";
-import SRGHLogo from "../logos/srghLogo";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const WhitePanel = () => {
@@ -8,13 +6,8 @@ const WhitePanel = () => {
 
 	return (
 		<div
-			className={`info`}
+			className="info shadow-xl"
 			ref={parent}>
-			<div className="logo-container">
-				<GytoolLogo />
-				<SRGHLogo />
-			</div>
-
 			<Clock />
 
 			<p style={{ fontFamily: "var(--f-bold)", fontWeight: "bold", fontSize: "var(--s-s)" }}>

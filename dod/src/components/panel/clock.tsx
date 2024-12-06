@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const Clock = () => {
@@ -19,6 +20,7 @@ const Clock = () => {
 			className="clock"
 			ref={parent}>
 			<div className="time">{time}</div>
+			<div className="timetable">9:00 - 12:00 | Den otevřených dveří</div>
 		</div>
 	);
 };

@@ -1,13 +1,15 @@
 // React
+
+import "./css/globals.css";
+import "./css/main.css";
+
+import Panel from "./Panel.tsx";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 // Styles
-import "./css/index.css";
-import "./css/theme.css";
 
 // Pages
-import Panel from "./Panel.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>

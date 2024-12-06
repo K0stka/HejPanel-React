@@ -1,1 +1,1 @@
-{"root":["./src/panel.tsx","./src/main.tsx","./src/components/logos/gytoollogo.tsx","./src/components/logos/srghlogo.tsx","./src/components/panel/clock.tsx","./src/components/panel/whitepanel.tsx"],"version":"5.6.2"}
+{"root":["./src/panel.tsx","./src/collage.tsx","./src/main.tsx","./src/panels.tsx","./src/video.tsx","./src/components/logos/gytoollogo.tsx","./src/components/logos/srghlogo.tsx","./src/components/panel/clock.tsx","./src/components/panel/whitepanel.tsx"],"version":"5.7.2"}
