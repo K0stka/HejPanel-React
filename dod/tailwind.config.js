@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
 	content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
 	theme: {
 		extend: {
@@ -10,7 +10,10 @@ module.exports = {
 				"3cols": "auto auto auto",
 			},
 			spacing: {
-				128: "32rem",
+				104: "26rem",
+				// 112: "28rem",
+				// 128: "32rem",
+				160: "40rem",
 			},
 		},
 	},

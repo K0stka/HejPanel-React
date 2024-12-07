@@ -5,7 +5,7 @@ interface CollageProps {
 const Collage = ({ images }: CollageProps) => {
 	const count = images.length;
 
-	const size = count === 1 ? "size-128" : count <= 3 ? "size-96" : "size-56";
+	const size = count === 1 ? "size-160" : count <= 3 ? "size-104" : "size-56";
 
 	const square3x3 = count === 9;
 

@@ -27,34 +27,34 @@ export const panels: { title?: string; element: React.ReactNode; description?: s
 	},
 	{
 		title: "Patroni",
-		element: <Collage images={[]} />,
-		description: "Program SRGH pro podporu nových studentů Gymnázia Hejčín. Má za cíl seznámit nové studenty se školou nejen skrze pedagogy ale i skrze starší studenty.",
+		element: <Collage images={["patroni/1.png"]} />,
+		description: "Patroni jsou program SRGH s cílem pomoci novým studentům zorientovat se na škole.",
 	},
 	{
 		title: "Vánoční aukce",
 		element: <Collage images={["aukce/2.jpg", "aukce/1.jpg", "aukce/3.jpg"]} />,
 		description:
-			"Než se všichni rozejdou na vánoční prázdniny, pořádáme SRGH každoroční Vánoční aukci, kde si můžete koupit různé věci, které věnovali studenti a učitelé. Výtěžek z této aukce jde na charitativní účely. Minulý rok se podařilo vybrat XX Kč pro Hemato-onkologické oddělení.",
+			"Než se všichni rozejdou na vánoční prázdniny, pořádá SRGH každoroční Vánoční aukci, kde je možno si koupit různé věci, které věnovali studenti a učitelé. Výtěžek z této aukce jde na dobročinné účely. Minulý rok se podařilo vybrat 35 000 Kč pro Hemato-onkologické oddělení.",
 	},
 	{
 		title: "Tématické dny",
 		element: <Collage images={["tematicke_dny/2.jpg", "tematicke_dny/4.jpg", "tematicke_dny/5.jpg", "tematicke_dny/6.jpg", "tematicke_dny/7.jpg", "tematicke_dny/8.jpg", "tematicke_dny/9.jpg", "tematicke_dny/11.jpg", "tematicke_dny/12.jpg"]} />,
 		description:
-			"Je už jistou tradicí zde na Hejčíně, že SRGH každoročně pořádá mnoho různých tématických dnů, konkrétně: Halloween, Čepicový den, Suit up day, Den bez batohů, Den svetrů, Ponožkový den (podpora lidí s Downovým syndromem) a Den učitelů (po domluvě si mohou žáci zkusit učit).",
+			"Je už jistou tradicí zde na Hejčíně, že SRGH každoročně pořádá spoustu tématických dnů, konkrétně: Halloween, Čepicový den, Suit up day, Den bez batohů, Den svetrů, Ponožkový den (podpora lidí s Downovým syndromem) a Den učitelů (po domluvě si mohou žáci zkusit učit).",
 	},
 	{
 		title: "Ročenka",
-		element: <Collage images={[]} />,
-		description: "Tradiční (dvou)ročenka Gymnázia Hejčín, kterou SRGH vydává každý rok. Obsahuje fotky všech studentů, pedagogů a zaměstnanců školy, spolu s citáty studentů.",
+		element: <Collage images={["rocenka/1.jpg", "rocenka/2.jpg"]} />,
+		description: "Tradiční (dvou)ročenka Gymnázia Hejčín, kterou SRGH vydává každý druhý rok. Obsahuje fotky všech studentů, pedagogů a zaměstnanců školy, spolu s citáty studentů.",
 	},
 	{
 		title: "Valentýn",
 		element: <Collage images={["valentyn/1.jpg"]} />,
-		description: "Každý rok pořádáme Valentýnský den, kdy SRGH zprostředkovává celoškolní poštu s Valentýnkami.",
+		description: "Každý rok pořádáme Valentýn, kdy žáci mohou v Klubu tvořit Valentýnky a pak je poslat komukoli díky celoškolní poště zprostředkovávané SRGH.",
 	},
 	{
 		title: "Přístřešek pro kola",
-		element: <Collage images={[]} />,
+		element: <Collage images={["pristresek/1.jpg"]} />,
 		description: "Jeden z nejnovějších projektů SRGH, který je stále v procesu realizace. Jeho cílem je dopřát zastřešené parkování pro kola studentům.",
 	},
 	{
@@ -65,7 +65,7 @@ export const panels: { title?: string; element: React.ReactNode; description?: s
 	{
 		title: "Menstruační pomůcky",
 		element: <Collage images={["menstruacni_pomucky/1.jpg", "menstruacni_pomucky/2.jpg", "menstruacni_pomucky/3.jpg"]} />,
-		description: "Zbrusu nový projekt SRGH, který nedávno vešel do testovacího provozu. Jeho cílem je na dívčích toaletách školy umístit menstruační pomůcky.",
+		description: "Zbrusu nový projekt SRGH, který nedávno vešel do testovacího provozu. Jeho cílem je na dívčích toaletách školy umístit volně přístupné menstruační pomůcky.",
 	},
 	{
 		title: "Materiální sbírka při povodních",

@@ -7,7 +7,7 @@ const Clock = () => {
 
 	useEffect(() => {
 		const timer = setInterval(() => {
-			setTime(new Date().toLocaleTimeString());
+			setTime(new Date().toLocaleTimeString("cs"));
 		}, 1000);
 
 		return () => clearInterval(timer);

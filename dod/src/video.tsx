@@ -13,7 +13,7 @@ const Video = () => {
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			// setPanelId((prevPanelId) => (prevPanelId + 1) % panels.length);
+			setPanelId((prevPanelId) => (prevPanelId + 1) % panels.length);
 		}, 8_000);
 		return () => clearInterval(interval);
 	}, []);
