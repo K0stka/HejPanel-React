@@ -48,7 +48,7 @@ async function getUserInfoFromCode(
   const user: MicrosoftUserInfo = {
     id: userData.id,
     displayName: userData.displayName,
-    mail: userData.mail ?? userData.userPrincipalName,
+    mail: userData.mail?.toLowerCase(),
   };
 
   return user;

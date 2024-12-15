@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { JSX, useContext } from "react";
 import {
   Sidebar as ShadCnSidebar,
   SidebarContent,
@@ -19,7 +20,6 @@ import { AuthContext } from "@/auth/context";
 import SidebarLinks from "./SidebarLinks";
 import SidebarLogo from "./SidebarLogo";
 import { SidebarUser } from "@/components/sidebar/SidebarUser";
-import { useContext } from "react";
 
 type SidebarProps = React.ComponentProps<typeof ShadCnSidebar> & {
   NotificationsElement: JSX.Element;
