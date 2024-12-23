@@ -1,7 +1,7 @@
 import { activities, threads } from "shared/schema";
 
 import { NextPage } from "next";
-import PageTemplate from "@/components/PageTemplate";
+import PageTemplate from "@/components/utility/PageTemplate";
 import db from "shared/db";
 import { desc } from "shared/orm";
 
@@ -16,7 +16,6 @@ const PanelsPage: NextPage = async () => {
       },
     },
   });
-  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return (
     <PageTemplate title="Panely">

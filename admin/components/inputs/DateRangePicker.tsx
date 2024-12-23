@@ -3,19 +3,19 @@
 
 import React, { type FC, useState, useEffect, useRef, JSX } from "react";
 import { cn } from "@/lib/utils";
-import { Label } from "./ui/label";
-import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
+import { Label } from "../ui/label";
+import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "./ui/select";
-import { Calendar } from "./ui/calendar";
-import { Button } from "./ui/button";
+} from "../ui/select";
+import { Calendar } from "../ui/calendar";
+import { Button } from "../ui/button";
 import { DateInput } from "./DateInput";
-import { Switch } from "./ui/switch";
+import { Switch } from "../ui/switch";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { cs, Locale } from "date-fns/locale";
 

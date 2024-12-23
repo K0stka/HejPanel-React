@@ -5,6 +5,7 @@ import { activities, panels, threads } from "shared/schema";
 import { AddPanelFormSchema } from "@/lib/constants";
 import db from "shared/db";
 import { getSessionUserRecord } from "@/auth/session";
+import z from "zod";
 
 const addPanel = async (formData: FormData) => {
   const user = await getSessionUserRecord();

@@ -1,7 +1,8 @@
 import { NextPage } from "next";
+import Spinner from "@/components/utility/Spinner";
 
 const AdminDashboardPage: NextPage = async () => {
-	return <div></div>;
+  return <Spinner />;
 };
 
 export default AdminDashboardPage;
