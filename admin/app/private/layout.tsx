@@ -15,7 +15,7 @@ const Layout: NextLayout = async ({ children }) => {
     <AuthProvider user={user}>
       <SidebarProvider>
         <Sidebar NotificationsElement={notifications} />
-        <main className="h-screen w-full overflow-y-auto">{children}</main>
+        <main className="h-screen w-full overflow-hidden">{children}</main>
         <Toaster />
       </SidebarProvider>
     </AuthProvider>

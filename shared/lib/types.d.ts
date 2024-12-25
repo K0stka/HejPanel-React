@@ -53,8 +53,24 @@ export type ActivityUserRequestAddPanel = ActivityBase & {
 	};
 };
 
+export type ActivityAdminAddPanel = ActivityBase & {
+	type: "admin:addPanel";
+	data: {
+		panel: PanelOrId;
+	};
+};
+
 export type ActivityUserRequestChangeTime = ActivityBase & {
 	type: "user:request:changeTime";
+	data: {
+		panel: PanelOrId;
+		showFrom: Date;
+		showTill: Date;
+	};
+};
+
+export type ActivityAdminChangeTime = ActivityBase & {
+	type: "admin:changeTime";
 	data: {
 		panel: PanelOrId;
 		showFrom: Date;
@@ -70,11 +86,28 @@ export type ActivityUserRequestChangePanel = ActivityBase & {
 	};
 };
 
-export type Activity = ActivityAdminAccept | ActivityAdminReject | ActivityMessage | ActivityUserRequestAddPanel | ActivityUserRequestChangeTime | ActivityUserRequestChangePanel;
+export type ActivityAdminChangePanel = ActivityBase & {
+	type: "admin:changeContent";
+	data: {
+		panel: PanelOrId;
+		content: string;
+	};
+};
+
+export type Activity =
+	| ActivityAdminAccept
+	| ActivityAdminReject
+	| ActivityMessage
+	| ActivityUserRequestAddPanel
+	| ActivityAdminAddPanel
+	| ActivityUserRequestChangeTime
+	| ActivityAdminChangeTime
+	| ActivityUserRequestChangePanel
+	| ActivityAdminChangePanel;
 
 export type ActivityOrId = Activity | number;
 
-export type Panel = {
+export type PanelBase = {
 	id: number;
 	thread: PanelThreadOrId;
 	author: UserOrId;
@@ -84,10 +117,39 @@ export type Panel = {
 	isDeprecated: boolean;
 	isHidden: boolean;
 	type: (typeof panelTypes)[number];
-	content: string;
 };
 
+export type ImagePanel = PanelBase & {
+	type: "image";
+	content: {
+		url: string;
+	};
+};
+
+export type VideoPanel = PanelBase & {
+	type: "video";
+	content: {
+		url: string;
+	};
+};
+
+export type TextPanel = PanelBase & {
+	type: "text";
+	content: {
+		background: PanelBackground["id"];
+		content: string;
+	};
+};
+
+export type Panel = ImagePanel | VideoPanel | TextPanel;
+
 export type PanelOrId = Panel | number;
+
+export type PanelBackground = {
+	id: number;
+	url: string;
+	textColor: string;
+};
 
 export type Canteen = {
 	snack: string | null;

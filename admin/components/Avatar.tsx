@@ -1,9 +1,9 @@
 import { AvatarFallback, Avatar as ShadCnAvatar } from "@/components/ui/avatar";
 
-import { User } from "shared/types";
-
 interface AvatarProps {
-  user: User;
+  user: {
+    name: string;
+  };
 }
 
 const Avatar = ({ user }: AvatarProps) => {

@@ -5,9 +5,9 @@ interface PageTemplateProps {
 
 const PageTemplate = ({ title, children }: PageTemplateProps) => {
   return (
-    <div className="box-border grid min-h-screen grid-rows-[auto,1fr] p-5">
+    <div className="box-border grid h-screen grid-rows-[auto,1fr] p-5">
       <h1 className="nunito mb-2 text-3xl font-bold">{title}</h1>
-      <div>{children}</div>
+      <div className="max-h-full overflow-y-auto">{children}</div>
     </div>
   );
 };

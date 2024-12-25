@@ -1,5 +1,5 @@
 import { activityTypes, panelTypes, themes, userTypes } from "../lib/constants.ts";
-import { boolean, date, integer, json, pgEnum, pgTable, varchar } from "drizzle-orm/pg-core";
+import { boolean, date, integer, json, pgEnum, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 
 export const themeEnum = pgEnum("theme", themes);
@@ -55,7 +55,7 @@ export const panels = pgTable("panels", {
 	isHidden: boolean("is_hidden").notNull().default(false),
 	isDeprecated: boolean("is_deprecated").notNull().default(false),
 	type: panelTypesEnum("type").notNull(),
-	content: varchar("content", { length: 1023 }).notNull(),
+	content: json("content").notNull(),
 });
 
 export const panelsRelations = relations(panels, ({ one }) => ({
@@ -63,13 +63,22 @@ export const panelsRelations = relations(panels, ({ one }) => ({
 	author: one(users, { fields: [panels.author], references: [users.id] }),
 }));
 
+export const panelBackgrounds = pgTable("panel_backgrounds", {
+	id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+	url: varchar("url", { length: 255 }).notNull(),
+	textColor: varchar("text_color", { length: 7 }).notNull(),
+	deprecated: boolean("deprecated").notNull().default(false),
+});
+
 export const threads = pgTable("threads", {
 	id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
 	owner: integer("owner")
 		.notNull()
 		.references(() => users.id),
-	createdAt: date("created_at", { mode: "date" }),
-	lastActivityAt: date("last_activity_at", { mode: "date" }).notNull(),
+	createdAt: timestamp("created_at", { mode: "date" })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
+	lastActivityAt: timestamp("last_activity_at", { mode: "date" }).notNull(),
 });
 
 export const threadsRelations = relations(threads, ({ one, many }) => ({
@@ -88,7 +97,7 @@ export const activities = pgTable("activity", {
 	author: integer("author")
 		.notNull()
 		.references(() => users.id),
-	sentAt: date("sent_at", { mode: "date" })
+	sentAt: timestamp("sent_at", { mode: "date" })
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
 	type: activityTypesEnum("type").notNull(),
@@ -105,7 +114,7 @@ export const notifications = pgTable("notification", {
 	recipient: integer("recipient")
 		.notNull()
 		.references(() => users.id),
-	sentAt: date("sent_at", { mode: "date" })
+	sentAt: timestamp("sent_at", { mode: "date" })
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
 	title: varchar("title", { length: 255 }).notNull(),

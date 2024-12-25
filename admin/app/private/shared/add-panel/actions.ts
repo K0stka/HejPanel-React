@@ -1,18 +1,28 @@
 "use server";
 
-import { activities, panels, threads } from "shared/schema";
+import { Panel, PanelBackground, PanelBackgroundOrId } from "shared/types";
+import { activities, panelBackgrounds, panels, threads } from "shared/schema";
 
-import { AddPanelFormSchema } from "@/lib/constants";
 import db from "shared/db";
+import { eq } from "shared/orm";
 import { getSessionUserRecord } from "@/auth/session";
-import z from "zod";
 
-const addPanel = async (formData: FormData) => {
+interface CreatePanelDto {
+  type: Panel["type"];
+  showFrom: Date;
+  showTill: Date;
+  content: Panel["content"];
+}
+
+export const addPanel = async ({
+  type,
+  showFrom,
+  showTill,
+  content,
+}: CreatePanelDto) => {
   const user = await getSessionUserRecord();
 
   if (!user) throw new Error("User not logged in");
-
-  const validatedData = AddPanelFormSchema.parse(formData);
 
   const newThreadId = (
     await db
@@ -30,10 +40,10 @@ const addPanel = async (formData: FormData) => {
       .values({
         author: user.id,
         thread: newThreadId,
-        type: validatedData.type,
-        showFrom: validatedData.showFrom,
-        showTill: validatedData.showTill,
-        content: validatedData.content ?? "",
+        type: type,
+        showFrom: showFrom,
+        showTill: showTill,
+        content: content,
       })
       .returning({ insertedId: panels.id })
   )[0].insertedId;
@@ -48,4 +58,8 @@ const addPanel = async (formData: FormData) => {
   });
 };
 
-export default addPanel;
+export const getPanelBackgrounds = async (): Promise<PanelBackground[]> => {
+  return await db.query.panelBackgrounds.findMany({
+    where: eq(panelBackgrounds.deprecated, false),
+  });
+};

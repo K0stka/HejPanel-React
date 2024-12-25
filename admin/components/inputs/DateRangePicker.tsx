@@ -18,6 +18,7 @@ import { DateInput } from "./DateInput";
 import { Switch } from "../ui/switch";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { cs, Locale } from "date-fns/locale";
+import { on } from "events";
 
 export interface DateRangePickerProps {
   /** Click handler for applying the updates from DateRangePicker. */
@@ -40,6 +41,8 @@ export interface DateRangePickerProps {
   fromDate?: Date;
   /** Option for max date */
   toDate?: Date;
+  /** Option for inline mode */
+  inline?: boolean;
 }
 
 const formatDate = (date: Date, locale: string = "en-us"): string => {
@@ -84,6 +87,77 @@ const PRESETS: Preset[] = [
   { name: "nextWeek", label: "Příští týden" },
 ];
 
+const OptionalPopoverWrapper = ({
+  isOpen,
+  setIsOpen,
+  range,
+  rangeCompare,
+  resetValues,
+  align,
+  locale,
+  inline,
+  children,
+}: {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  range: DateRange;
+  rangeCompare?: DateRange;
+  resetValues: () => void;
+  align: "start" | "center" | "end";
+  locale: Locale;
+  inline: boolean;
+  children: JSX.Element;
+}) => {
+  return inline ? (
+    <div>{children}</div>
+  ) : (
+    <Popover
+      modal={true}
+      open={isOpen}
+      onOpenChange={(open: boolean) => {
+        if (!open) {
+          resetValues();
+        }
+        setIsOpen(open);
+      }}
+    >
+      <PopoverTrigger asChild>
+        <Button variant="outline">
+          <div className="text-right">
+            <div className="py-1">
+              <div>{`${formatDate(range.from, locale.code)}${
+                range.to != null
+                  ? " - " + formatDate(range.to, locale.code)
+                  : ""
+              }`}</div>
+            </div>
+            {rangeCompare != null && (
+              <div className="-mt-1 text-xs opacity-60">
+                <>
+                  vs. {formatDate(rangeCompare.from, locale.code)}
+                  {rangeCompare.to != null
+                    ? ` - ${formatDate(rangeCompare.to, locale.code)}`
+                    : ""}
+                </>
+              </div>
+            )}
+          </div>
+          <div className="-mr-2 scale-125 pl-1 opacity-60">
+            {isOpen ? (
+              <ChevronUpIcon width={24} />
+            ) : (
+              <ChevronDownIcon width={24} />
+            )}
+          </div>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align={align} className="w-auto">
+        {children}
+      </PopoverContent>
+    </Popover>
+  );
+};
+
 /** The DateRangePicker component allows a user to select a range of dates */
 export const DateRangePicker: FC<DateRangePickerProps> & {
   filePath: string;
@@ -98,16 +172,22 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
   showCompare = true,
   fromDate,
   toDate,
+  inline = false,
 }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [range, setRange] = useState<DateRange>({
+  const [range, setRangeState] = useState<DateRange>({
     from: getDateAdjustedForTimezone(initialDateFrom),
     to: initialDateTo
       ? getDateAdjustedForTimezone(initialDateTo)
       : getDateAdjustedForTimezone(initialDateFrom),
   });
-  const [rangeCompare, setRangeCompare] = useState<DateRange | undefined>(
+  const setRange = (range: DateRange): void => {
+    range.to ??= range.from;
+    setRangeState(range);
+    if (inline) onUpdate?.({ range, rangeCompare });
+  };
+  const [rangeCompare, setRangeCompareState] = useState<DateRange | undefined>(
     initialCompareFrom
       ? {
           from: new Date(new Date(initialCompareFrom).setHours(0, 0, 0, 0)),
@@ -117,6 +197,11 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
         }
       : undefined,
   );
+  const setRangeCompare = (rangeCompare: DateRange | undefined): void => {
+    if (rangeCompare) rangeCompare.to ??= rangeCompare?.from;
+    setRangeCompareState(rangeCompare);
+    if (inline) onUpdate?.({ range, rangeCompare });
+  };
 
   // Refs to store the values of range and rangeCompare when the date picker is opened
   const openedRangeRef = useRef<DateRange | undefined>(undefined);
@@ -372,47 +457,17 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
   }, [isOpen]);
 
   return (
-    <Popover
-      modal={true}
-      open={isOpen}
-      onOpenChange={(open: boolean) => {
-        if (!open) {
-          resetValues();
-        }
-        setIsOpen(open);
-      }}
+    <OptionalPopoverWrapper
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      range={range}
+      rangeCompare={rangeCompare}
+      resetValues={resetValues}
+      align={align}
+      locale={locale}
+      inline={inline}
     >
-      <PopoverTrigger asChild>
-        <Button variant="outline">
-          <div className="text-right">
-            <div className="py-1">
-              <div>{`${formatDate(range.from, locale.code)}${
-                range.to != null
-                  ? " - " + formatDate(range.to, locale.code)
-                  : ""
-              }`}</div>
-            </div>
-            {rangeCompare != null && (
-              <div className="-mt-1 text-xs opacity-60">
-                <>
-                  vs. {formatDate(rangeCompare.from, locale.code)}
-                  {rangeCompare.to != null
-                    ? ` - ${formatDate(rangeCompare.to, locale.code)}`
-                    : ""}
-                </>
-              </div>
-            )}
-          </div>
-          <div className="-mr-2 scale-125 pl-1 opacity-60">
-            {isOpen ? (
-              <ChevronUpIcon width={24} />
-            ) : (
-              <ChevronDownIcon width={24} />
-            )}
-          </div>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align={align} className="w-auto">
+      <>
         <div className="flex py-2">
           <div className="flex">
             <div className="flex flex-col">
@@ -463,11 +518,10 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                       onChange={(date) => {
                         const toDate =
                           range.to == null || date > range.to ? date : range.to;
-                        setRange((prevRange) => ({
-                          ...prevRange,
+                        setRange({
                           from: date,
                           to: toDate,
-                        }));
+                        });
                       }}
                     />
                     <div className="py-1">-</div>
@@ -475,11 +529,10 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                       value={range.to}
                       onChange={(date) => {
                         const fromDate = date < range.from ? date : range.from;
-                        setRange((prevRange) => ({
-                          ...prevRange,
+                        setRange({
                           from: fromDate,
                           to: date,
-                        }));
+                        });
                       }}
                     />
                   </div>
@@ -493,11 +546,10 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                               rangeCompare.to == null || date > rangeCompare.to
                                 ? date
                                 : rangeCompare.to;
-                            setRangeCompare((prevRangeCompare) => ({
-                              ...prevRangeCompare,
+                            setRangeCompare({
                               from: date,
                               to: compareToDate,
-                            }));
+                            });
                           } else {
                             setRangeCompare({
                               from: date,
@@ -527,7 +579,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                   )}
                 </div>
               </div>
-              {isSmallScreen && (
+              {isSmallScreen && !inline && (
                 <Select
                   defaultValue={selectedPreset}
                   onValueChange={(value) => {
@@ -568,7 +620,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               </div>
             </div>
           </div>
-          {!isSmallScreen && (
+          {!isSmallScreen && !inline && (
             <div className="flex w-full flex-col items-end gap-1">
               {PRESETS.map((preset) => (
                 <PresetButton
@@ -581,32 +633,34 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
             </div>
           )}
         </div>
-        <div className="flex justify-end gap-2">
-          <Button
-            onClick={() => {
-              setIsOpen(false);
-              resetValues();
-            }}
-            variant="ghost"
-          >
-            Zrušit
-          </Button>
-          <Button
-            onClick={() => {
-              setIsOpen(false);
-              if (
-                !areRangesEqual(range, openedRangeRef.current) ||
-                !areRangesEqual(rangeCompare, openedRangeCompareRef.current)
-              ) {
-                onUpdate?.({ range, rangeCompare });
-              }
-            }}
-          >
-            Uložit
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
+        {!inline && (
+          <div className="flex justify-end gap-2">
+            <Button
+              onClick={() => {
+                setIsOpen(false);
+                resetValues();
+              }}
+              variant="ghost"
+            >
+              Zrušit
+            </Button>
+            <Button
+              onClick={() => {
+                setIsOpen(false);
+                if (
+                  !areRangesEqual(range, openedRangeRef.current) ||
+                  !areRangesEqual(rangeCompare, openedRangeCompareRef.current)
+                ) {
+                  onUpdate?.({ range, rangeCompare });
+                }
+              }}
+            >
+              Uložit
+            </Button>
+          </div>
+        )}
+      </>
+    </OptionalPopoverWrapper>
   );
 };
 
