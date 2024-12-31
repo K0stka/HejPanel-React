@@ -1,6 +1,6 @@
-import { bgBrightBlue, bgBrightGreen, bgBrightYellow, black, bold, underline, brightCyan, brightGreen, brightRed, cyan, gray, green, white, yellow, brightBlue, brightYellow } from "https://deno.land/std@0.150.0/fmt/colors.ts";
+import { bgBrightBlue, bgBrightGreen, bgBrightYellow, black, bold, brightBlue, brightCyan, brightGreen, brightRed, brightYellow, cyan, gray, green, underline, white, yellow } from "https://deno.land/std@0.150.0/fmt/colors.ts";
 
-const printStartupScreen = () => {
+export const printStartupScreen = () => {
 	console.log(" _   _       _ ____                  _      _    ____ ___ ");
 	console.log("| | | | ___ (_)  _ \\ __ _ _ __   ___| |    / \\  |  _ \\_ _|");
 	console.log("| |_| |/ _ \\| | |_) / _` | '_ \\ / _ \\ |   / _ \\ | |_) | | ");
@@ -31,23 +31,25 @@ const printStartupScreen = () => {
 	console.log();
 };
 
-const printMessage = (emote: string | null, ...message: string[]) => console.log(emote ? `  ${emote} ` : "    ", ...message);
+export const printMessage = (emote: string | null, ...message: string[]) => console.log(`[${new Date().toLocaleString()}]`, emote ? `${emote} ` : "  ", ...message);
 
-const printServerReady = () => {
+export const printServerReady = () => {
 	console.log();
 	printMessage("👍", brightYellow("Server is ready to accept connections!"));
 	console.log();
 };
 
-const printConnect = (UID: string) => printMessage("🟢", brightGreen("Connected"), gray(`[UID:${UID}]`));
-const printDisconnect = (UID: string) => printMessage("🔴", brightRed("Disconnected"), gray(`[UID:${UID}]`));
+export const printConnect = (UID: string) => printMessage("🟢", brightGreen("Connected"), gray(`[UID:${UID}]`));
+export const printDisconnect = (UID: string) => printMessage("🔴", brightRed("Disconnected"), gray(`[UID:${UID}]`));
 
-const printFetchedData = (dataDescription: string) => printMessage("🔄", brightCyan("Fetched"), bold(underline(dataDescription)));
-const printReadDataFromCache = (dataDescription: string, wasCachedInDB: boolean = false) => printMessage("📦", `Read ${wasCachedInDB ? "DB" : "memory"} cached`, bold(underline(dataDescription)));
-const printWrittenDataToCache = (dataDescription: string) => printMessage("📝", `Written`, bold(underline(dataDescription)), `to DB cache`);
-const printClearedCache = (dataDescription: string) => printMessage("🗑️", gray(`Cleared old cache for`), bold(underline(dataDescription)));
+export const printFetchedData = (dataDescription: string) => printMessage("🔄", brightCyan("Fetched"), bold(underline(dataDescription)));
+export const printReadDataFromCache = (dataDescription: string, wasCachedInDB: boolean = false) => printMessage("📦", `Read ${wasCachedInDB ? "DB" : "memory"} cached`, bold(underline(dataDescription)));
+export const printLoadedDataFromDB = (dataDescription: string) => printMessage("💽", `Loaded`, bold(underline(dataDescription)), `from DB`);
+export const printWrittenDataToDB = (dataDescription: string) => printMessage("📝", `Written`, bold(underline(dataDescription)), `to DB`);
+export const printClearedCache = (dataDescription: string) => printMessage("🗑️", gray(`Cleared old cache for`), bold(underline(dataDescription)));
 
-const printHydratedData = (...dataDescription: string[]) => printMessage("🌊", brightBlue("Hydrated"), dataDescription.map((e) => bold(underline(e))).join(", "));
-const printSentDataToUID = (UID: string, ...dataDescription: string[]) => printMessage("📨", brightYellow("Sent"), dataDescription.map((e) => bold(underline(e))).join(", "), gray(`to [UID:${UID}]`));
+export const printHydratedData = (...dataDescription: string[]) => printMessage("🌊", brightBlue("Hydrated"), dataDescription.map((e) => bold(underline(e))).join(", "));
+export const printSentDataToUID = (UID: string, ...dataDescription: string[]) => printMessage("📨", brightYellow("Sent"), dataDescription.map((e) => bold(underline(e))).join(", "), gray(`to [UID:${UID}]`));
 
-export { printStartupScreen, printMessage, printServerReady, printConnect, printDisconnect, printFetchedData, printReadDataFromCache, printClearedCache, printWrittenDataToCache, printHydratedData, printSentDataToUID };
+export const printRestartingSync = () => printMessage("🌅", brightYellow("Starting background synchronization tasks..."));
+export const printSuspendingSync = () => printMessage("🌙", brightYellow("Suspending background synchronization tasks to preserve resources..."));

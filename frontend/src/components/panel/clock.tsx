@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+
 import { TimetableEnabledContext } from "../../util/context";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const Clock = () => {
-	const [time, setTime] = useState(new Date().toLocaleTimeString());
+	const [time, setTime] = useState(new Date().toLocaleTimeString("cs-CZ"));
 	const [timetable, setTimetable] = useState<string | null>();
 
 	const timetableEnabled = useContext(TimetableEnabledContext);
@@ -105,7 +106,7 @@ const Clock = () => {
 		const timer = setInterval(() => {
 			const now = new Date();
 
-			setTime(now.toLocaleTimeString());
+			setTime(now.toLocaleTimeString("cs-CZ"));
 
 			if (now.getSeconds() === 0) updateCurrentTimetable();
 		}, 1000);

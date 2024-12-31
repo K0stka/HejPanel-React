@@ -1,3 +1,4 @@
+import { Activity, Panel } from "../lib/types.d.ts";
 import { activityTypes, panelTypes, themes, userTypes } from "../lib/constants.ts";
 import { boolean, date, integer, json, pgEnum, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
@@ -30,6 +31,7 @@ export const users = pgTable("users", {
 	name: varchar("name", { length: 255 }).notNull(),
 	email: varchar("email", { length: 255 }).notNull().unique(),
 	type: userTypesEnum("type").notNull().default(userTypes[0]),
+	suspended: boolean("suspended").notNull().default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -55,7 +57,7 @@ export const panels = pgTable("panels", {
 	isHidden: boolean("is_hidden").notNull().default(false),
 	isDeprecated: boolean("is_deprecated").notNull().default(false),
 	type: panelTypesEnum("type").notNull(),
-	content: json("content").notNull(),
+	content: json("content").notNull().$type<Panel["content"]>(),
 });
 
 export const panelsRelations = relations(panels, ({ one }) => ({
@@ -75,10 +77,10 @@ export const threads = pgTable("threads", {
 	owner: integer("owner")
 		.notNull()
 		.references(() => users.id),
-	createdAt: timestamp("created_at", { mode: "date" })
+	createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
-	lastActivityAt: timestamp("last_activity_at", { mode: "date" }).notNull(),
+	lastActivityAt: timestamp("last_activity_at", { mode: "date", withTimezone: true }).notNull(),
 });
 
 export const threadsRelations = relations(threads, ({ one, many }) => ({
@@ -97,11 +99,11 @@ export const activities = pgTable("activity", {
 	author: integer("author")
 		.notNull()
 		.references(() => users.id),
-	sentAt: timestamp("sent_at", { mode: "date" })
+	sentAt: timestamp("sent_at", { mode: "date", withTimezone: true })
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
 	type: activityTypesEnum("type").notNull(),
-	data: json("data").notNull(),
+	data: json("data").notNull().$type<Activity["data"]>(),
 });
 
 export const activitiesRelations = relations(activities, ({ one }) => ({
@@ -114,7 +116,7 @@ export const notifications = pgTable("notification", {
 	recipient: integer("recipient")
 		.notNull()
 		.references(() => users.id),
-	sentAt: timestamp("sent_at", { mode: "date" })
+	sentAt: timestamp("sent_at", { mode: "date", withTimezone: true })
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
 	title: varchar("title", { length: 255 }).notNull(),

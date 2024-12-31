@@ -1,4 +1,4 @@
-export const userTypes = ["user", "admin"] as const;
+export const userTypes = ["user", "admin", "super-admin"] as const;
 
 export const panelTypes = ["text", "image", "video"] as const;
 

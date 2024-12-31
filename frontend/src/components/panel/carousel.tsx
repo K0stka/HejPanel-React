@@ -1,22 +1,46 @@
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 
-import { PanelsContext } from "../../util/context";
+import { DisplayPanel } from "shared";
+import PanelElement from "./PanelElement";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
-import PanelElement from "./panelElement";
+interface CarouselProps {
+	panels: DisplayPanel[];
+}
 
-const Carousel = () => {
-	const panels = useContext(PanelsContext);
+const REVOLUTION_MS = 5_000;
+
+const Carousel = ({ panels }: CarouselProps) => {
+	const [parent] = useAutoAnimate({
+		easing: "ease-in-out",
+	});
+
+	const [visiblePanel, setVisiblePanel] = useState(0);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setVisiblePanel((prev) => (prev + 1) % panels.length);
+		}, REVOLUTION_MS);
+
+		return () => clearInterval(interval);
+	}, [panels.length]);
 
 	return (
-		<div className="carousel">
-			{panels.length === 0 && <div className="carousel-empty">No panels to display</div>}
-			{panels.length > 1 && <div className="carousel-progress">1 / {panels.length}</div>}
-			{panels.map((panel) => (
+		<div
+			className="carousel"
+			ref={parent}>
+			{panels.length === 0 && <div className="carousel-empty">😞</div>}
+			{panels.length > 1 && (
+				<div className={`carousel-progress ${visiblePanel}`}>
+					{visiblePanel + 1} / {panels.length}
+				</div>
+			)}
+			{panels[visiblePanel] && (
 				<PanelElement
-					key={panel.id}
-					panel={panel}
+					panel={panels[visiblePanel]}
+					key={panels[visiblePanel].id}
 				/>
-			))}
+			)}
 		</div>
 	);
 };

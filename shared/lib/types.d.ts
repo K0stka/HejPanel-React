@@ -1,4 +1,5 @@
 import { userTypes, activityTypes, panelTypes, themes } from "./constants.ts";
+import type { Dispatch, SetStateAction } from "react";
 
 export type User = {
 	id: number;
@@ -6,90 +7,88 @@ export type User = {
 	name: string;
 	email: string;
 	type: (typeof userTypes)[number];
+	suspended: boolean;
 };
-
-export type UserOrId = User | number;
 
 export type PanelThread = {
 	id: number;
-	owner: UserOrId;
+	owner: User["id"];
 };
 
-export type PanelThreadOrId = PanelThread | number;
-
-type ActivityBase = {
+type BaseActivity = {
 	id: number;
-	thread: PanelThreadOrId;
-	author: UserOrId;
+	thread: PanelThread["id"];
+	author: User["id"];
 	sentAt: Date;
 	type: (typeof activityTypes)[number];
+	data: object;
 };
 
-export type ActivityAdminAccept = ActivityBase & {
+export type ActivityAdminAccept = BaseActivity & {
 	type: "admin:accept";
 	data: {
-		activity: ActivityOrId;
+		activity: Activity["id"];
 	};
 };
 
-export type ActivityAdminReject = ActivityBase & {
+export type ActivityAdminReject = BaseActivity & {
 	type: "admin:reject";
 	data: {
-		activity: ActivityOrId;
+		activity: Activity["id"];
 	};
 };
 
-export type ActivityMessage = ActivityBase & {
+export type ActivityMessage = BaseActivity & {
 	type: "message";
 	data: {
 		message: string;
 	};
 };
 
-export type ActivityUserRequestAddPanel = ActivityBase & {
+export type ActivityUserRequestAddPanel = BaseActivity & {
 	type: "user:request:addPanel";
 	data: {
-		panel: PanelOrId;
+		panel: Panel["id"];
 	};
 };
 
-export type ActivityAdminAddPanel = ActivityBase & {
+export type ActivityAdminAddPanel = BaseActivity & {
 	type: "admin:addPanel";
 	data: {
-		panel: PanelOrId;
+		panel: Panel["id"];
 	};
 };
 
-export type ActivityUserRequestChangeTime = ActivityBase & {
+export type ActivityUserRequestChangeTime = BaseActivity & {
 	type: "user:request:changeTime";
 	data: {
-		panel: PanelOrId;
+		panel: Panel["id"];
 		showFrom: Date;
 		showTill: Date;
 	};
 };
 
-export type ActivityAdminChangeTime = ActivityBase & {
+export type ActivityAdminChangeTime = BaseActivity & {
 	type: "admin:changeTime";
 	data: {
-		panel: PanelOrId;
+		panel: Panel["id"];
 		showFrom: Date;
 		showTill: Date;
 	};
 };
 
-export type ActivityUserRequestChangePanel = ActivityBase & {
+export type ActivityUserRequestChangePanel = BaseActivity & {
 	type: "user:request:changeContent";
 	data: {
-		panel: PanelOrId;
+		panel: Panel["id"];
 		content: string;
 	};
 };
 
-export type ActivityAdminChangePanel = ActivityBase & {
+export type ActivityAdminChangePanel = BaseActivity & {
 	type: "admin:changeContent";
 	data: {
-		panel: PanelOrId;
+		panel: Panel["id"];
 		content: string;
 	};
 };
@@ -105,12 +104,10 @@ export type Activity =
 	| ActivityUserRequestChangePanel
 	| ActivityAdminChangePanel;
 
-export type ActivityOrId = Activity | number;
-
-export type PanelBase = {
+type BasePanel = {
 	id: number;
-	thread: PanelThreadOrId;
-	author: UserOrId;
+	thread: PanelThread["id"];
+	author: User["id"];
 	showFrom: Date;
 	showTill: Date;
 	isApproved: boolean;
@@ -119,31 +116,47 @@ export type PanelBase = {
 	type: (typeof panelTypes)[number];
 };
 
-export type ImagePanel = PanelBase & {
+export type ImagePanel = BasePanel & {
 	type: "image";
 	content: {
 		url: string;
 	};
 };
 
-export type VideoPanel = PanelBase & {
+export type VideoPanel = BasePanel & {
 	type: "video";
 	content: {
 		url: string;
 	};
 };
 
-export type TextPanel = PanelBase & {
+export type TextPanel = BasePanel & {
 	type: "text";
 	content: {
-		background: PanelBackground["id"];
 		content: string;
+		background: PanelBackground["url"];
+		textColor: PanelBackground["textColor"];
 	};
 };
 
 export type Panel = ImagePanel | VideoPanel | TextPanel;
 
-export type PanelOrId = Panel | number;
+export type DisplayPanel = {
+	id: Panel["id"];
+} & (
+	| {
+			type: ImagePanel["type"];
+			content: ImagePanel["content"];
+	  }
+	| {
+			type: VideoPanel["type"];
+			content: VideoPanel["content"];
+	  }
+	| {
+			type: TextPanel["type"];
+			content: TextPanel["content"];
+	  }
+);
 
 export type PanelBackground = {
 	id: number;
@@ -163,7 +176,7 @@ export type Canteen = {
 export type Departures = {
 	ladova: Departure[];
 	natrati: Departure[];
-	vlak: Departure | null;
+	vlak: Departure[];
 };
 
 export type Departure = {
@@ -185,14 +198,14 @@ export type Configuration = {
 
 export type ClientState = Configuration & {
 	online: boolean;
-	panels: Panel[];
+	panels: DisplayPanel[];
 	canteen: Canteen;
 	departures: Departures;
 };
 
 export type HejNotification = {
 	id: number;
-	recipient: UserOrId;
+	recipient: User;
 	title: string;
 	content: string;
 	path?: string;
@@ -207,3 +220,5 @@ export type Only<T, U> = {
 };
 
 export type Either<T, U> = Only<T, U> | Only<U, T>;
+
+export type SetState<T> = Dispatch<SetStateAction<T>>;

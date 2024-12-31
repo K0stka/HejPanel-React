@@ -1,10 +1,9 @@
+import CanteenTable from "./Canteen";
 import { ClientState } from "shared";
-
-import CanteenTable from "./canteen";
-import DeparturesTable from "./departuresTable";
-import Clock from "./clock";
-import GytoolLogo from "../logos/gytoolLogo";
-import SRGHLogo from "../logos/srghLogo";
+import Clock from "./Clock";
+import DeparturesTable from "./DeparturesTable";
+import GytoolLogo from "../logos/GytoolLogo";
+import SRGHLogo from "../logos/SrghLogo";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {

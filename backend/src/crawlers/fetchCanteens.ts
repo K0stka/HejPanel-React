@@ -1,4 +1,5 @@
 import type { Canteen, Either } from "shared/types";
+
 import { printFetchedData } from "../utils/print.ts";
 
 const fetchCanteens = async (): Promise<{ date: Date; canteen: Canteen }[]> => {
@@ -105,7 +106,7 @@ const fetchCanteens = async (): Promise<{ date: Date; canteen: Canteen }[]> => {
 
 		const date = canteenResponse[0][key][0].datum.split(".").map((x) => parseInt(x));
 		canteens.push({
-			date: new Date(date[2], date[1] - 1, date[0]),
+			date: new Date(date[2], date[1] - 1, date[0], 0, 0, 0, 0),
 			canteen: day,
 		});
 	}

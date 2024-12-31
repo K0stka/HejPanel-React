@@ -1,7 +1,8 @@
 import { NextPage } from "next";
+import PageTemplate from "@/components/utility/PageTemplate";
 
 const UsersPage: NextPage = async () => {
-  return <h1>Users</h1>;
+    return <PageTemplate title="Uživatelé" />;
 };
 
 export default UsersPage;

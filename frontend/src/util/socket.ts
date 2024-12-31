@@ -1,13 +1,15 @@
+import { Canteen, ClientState, Departures, Panel, Theme } from "shared";
+import { useEffect, useState } from "react";
+
 import { io } from "socket.io-client";
 
-const DEV: boolean = true;
+// const DEV: boolean = true;
 
-const URL = DEV ? "http://localhost:5050" : "http://194.182.86.61:5050";
+// const URL = DEV ? "http://localhost:5050" : "http://194.182.86.61:5050";
+
+const URL = "http://192.168.137.1:5050";
 
 export const socket = io(URL);
-
-import { useEffect, useState } from "react";
-import { Canteen, Departures, Panel, ClientState, Theme } from "shared";
 
 export default function useSocket(): ClientState {
 	const [online, setOnline] = useState(socket.connected);

@@ -3,23 +3,23 @@ import { NextLayout } from "@/lib/types";
 import Notifications from "@/components/Notifications";
 import { Sidebar } from "@/components/sidebar/Sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Toaster } from "@/components/ui/sonner";
-import { getSessionUserInfo } from "@/auth/session-hooks";
+import { getSessionUserInfo } from "@/auth/session-utils";
 
 const Layout: NextLayout = async ({ children }) => {
-  const user = await getSessionUserInfo();
+    const user = await getSessionUserInfo();
 
-  const notifications = <Notifications />;
+    const notifications = <Notifications />;
 
-  return (
-    <AuthProvider user={user}>
-      <SidebarProvider>
-        <Sidebar NotificationsElement={notifications} />
-        <main className="h-screen w-full overflow-hidden">{children}</main>
-        <Toaster />
-      </SidebarProvider>
-    </AuthProvider>
-  );
+    return (
+        <AuthProvider user={user}>
+            <SidebarProvider>
+                <Sidebar NotificationsElement={notifications} />
+                <main className="h-screen w-full overflow-hidden">
+                    {children}
+                </main>
+            </SidebarProvider>
+        </AuthProvider>
+    );
 };
 
 export default Layout;

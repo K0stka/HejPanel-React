@@ -1,28 +1,15 @@
+import { CanteenContext, DeparturesContext, TimetableEnabledContext } from "./util/context";
+
+import Carousel from "./components/panel/Carousel";
+import WhitePanel from "./components/panel/WhitePanel";
 import getClientState from "./util/getClientState";
-
-import { CanteenContext, DeparturesContext, PanelsContext, TimetableEnabledContext } from "./util/context";
-
-import WhitePanel from "./components/panel/whitePanel";
-import Carousel from "./components/panel/carousel";
 
 function Panel() {
 	const state = getClientState();
 
 	return (
 		<main>
-			<link
-				rel="stylesheet"
-				href="Panel.css"
-			/>
-			<div className="carousel-container">
-				{state.online ? (
-					<PanelsContext.Provider value={state.panels}>
-						<Carousel />{" "}
-					</PanelsContext.Provider>
-				) : (
-					<div className="error">HejPanel je offline</div>
-				)}
-			</div>
+			<div className="carousel-container">{state.online ? <Carousel panels={state.panels} /> : <div className="error">🔴 OFFLINE</div>}</div>
 
 			<CanteenContext.Provider value={state.canteen}>
 				<DeparturesContext.Provider value={state.departures}>

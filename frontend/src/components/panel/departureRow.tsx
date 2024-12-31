@@ -1,5 +1,5 @@
+import CarrierIcon from "./CarrierIcon";
 import { Departure } from "shared";
-import CarrierIcon from "./carrierIcon";
 
 interface Props {
 	departure: Departure;

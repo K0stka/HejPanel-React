@@ -1,54 +1,75 @@
-import { Panel } from "shared/types";
-import db from "shared/db";
-import { eq } from "shared/orm";
-import { panelBackgrounds } from "shared/schema";
+"use client";
+
+import { ImagePanel, Panel, TextPanel, VideoPanel } from "shared/types";
+
+import { cn } from "@/lib/utils";
 
 interface PanelPreviewProps {
-  panel: Panel;
+    type: Panel["type"];
+    content: Panel["content"];
+    size?: 20 | 40 | 60 | 80 | 96;
 }
 
-const PanelPreview = async ({ panel }: PanelPreviewProps) => {
-  let background;
-  if (panel.type === "text")
-    background = await db.query.panelBackgrounds.findFirst({
-      where: eq(panelBackgrounds.id, panel.content.background),
-      columns: {
-        textColor: true,
-        url: true,
-      },
-    });
-
-  return (
-    <div className="aspect-video h-40 overflow-hidden rounded-md">
-      {panel.type === "image" && (
-        <img
-          src={panel.content.url}
-          alt="panel"
-          className="h-full w-full object-cover"
-        />
-      )}
-      {panel.type === "video" && (
-        <video
-          src={panel.content.url}
-          className="h-full w-full object-cover"
-          controls
-        />
-      )}
-      {panel.type === "text" && (
+const PanelPreview = ({ type, content, size = 40 }: PanelPreviewProps) => {
+    return (
         <div
-          className="flex h-full w-full items-center justify-center"
-          style={{
-            backgroundImage: `url(${background?.url})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            color: background?.textColor,
-          }}
+            className={cn(`relative aspect-video overflow-hidden rounded-md`, {
+                "h-20": size === 20,
+                "h-40": size === 40,
+                "h-60": size === 60,
+                "h-80": size === 80,
+                "h-96": size === 96,
+            })}
         >
-          {panel.content.content}
+            {(() => {
+                switch (type) {
+                    case "image":
+                        return (
+                            <>
+                                <img
+                                    src={(content as ImagePanel["content"]).url}
+                                    alt="panel"
+                                    className="absolute h-full w-full object-cover blur-lg brightness-50"
+                                />
+                                <img
+                                    src={(content as ImagePanel["content"]).url}
+                                    alt="panel"
+                                    className="absolute h-full w-full object-contain"
+                                />
+                            </>
+                        );
+                    case "video":
+                        return (
+                            <>
+                                <div className="absolute h-full w-full bg-black" />
+                                <video
+                                    src={(content as VideoPanel["content"]).url}
+                                    className="absolute h-full w-full object-contain"
+                                    autoPlay
+                                    loop
+                                    muted
+                                />
+                            </>
+                        );
+                    case "text":
+                        return (
+                            <div
+                                className="flex h-full w-full items-center justify-center"
+                                style={{
+                                    backgroundImage: `url(${(content as TextPanel["content"]).background})`,
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center",
+                                    color: (content as TextPanel["content"])
+                                        .textColor,
+                                }}
+                            >
+                                {(content as TextPanel["content"]).content}
+                            </div>
+                        );
+                }
+            })()}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default PanelPreview;

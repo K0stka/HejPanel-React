@@ -1,11 +1,8 @@
-import { useContext } from "react";
-
-import { useAutoAnimate } from "@formkit/auto-animate/react";
-
-import { DeparturesContext } from "../../util/context";
-
-import DepartureRow from "./departureRow";
+import DepartureRow from "./DepartureRow";
 import { Departures } from "shared";
+import { DeparturesContext } from "../../util/context";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useContext } from "react";
 
 const DeparturesTable = () => {
 	const departures: Departures = useContext(DeparturesContext);
@@ -38,14 +35,17 @@ const DeparturesTable = () => {
 					/>
 				))}
 			</div>
-			{departures.vlak && (
-				<div
-					className="departures"
-					ref={parent3}>
-					<h2>Vlak:</h2>
-					<DepartureRow departure={departures.vlak} />
-				</div>
-			)}
+			<div
+				className="departures"
+				ref={parent3}>
+				<h2>Vlak:</h2>
+				{departures.vlak.map((departure) => (
+					<DepartureRow
+						key={departure.line + departure.carrier + departure.destination.substring(-5)}
+						departure={departure}
+					/>
+				))}
+			</div>
 		</div>
 	);
 };
