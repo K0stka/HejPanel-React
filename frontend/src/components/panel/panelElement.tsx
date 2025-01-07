@@ -1,4 +1,6 @@
 import { DisplayPanel } from "shared";
+import { env } from "../../../env";
+import { getPanelBackgroundUrl } from "../../../../admin/lib/utils";
 
 interface Props {
 	panel: DisplayPanel;
@@ -13,8 +15,8 @@ const PanelElement = ({ panel }: Props) => {
 						return (
 							<>
 								<img
-									src={panel.content.background}
 									alt=""
+									src={env.ADMIN_URL + getPanelBackgroundUrl(panel.content.background)}
 									className="panel-background"
 								/>
 								<div

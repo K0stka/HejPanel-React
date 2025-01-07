@@ -2,7 +2,7 @@
 
 import { Panel, PanelBackground } from "shared/types";
 import { activities, panelBackgrounds, panels, threads } from "shared/schema";
-import { and, eq } from "shared/orm";
+import { and, asc, eq } from "shared/orm";
 import { getSessionUserInfo, validateUser } from "@/auth/session-utils";
 
 import db from "shared/db";
@@ -17,7 +17,7 @@ export interface CreatePanelDTO {
     content:
         | { base64: string }
         | { base64: string }
-        | { content: string; backgroundId: number };
+        | { content: string; background: number };
 }
 
 const validateCreatePanelDTO = async (
@@ -42,7 +42,7 @@ const validateCreatePanelDTO = async (
             content: z.object({
                 base64: z.string().optional(),
                 content: z.string().optional(),
-                backgroundId: z.number().optional(),
+                background: z.number().optional(),
             }),
         })
         .parse(data);
@@ -69,16 +69,16 @@ const validateCreatePanelDTO = async (
             if (!parsed.content.content || parsed.content.content.length === 0)
                 throw new Error("Text content is required");
 
-            if (!parsed.content.backgroundId)
+            if (!parsed.content.background)
                 throw new Error("Background ID is required");
 
             const background = await db.query.panelBackgrounds.findFirst({
                 where: and(
-                    eq(panelBackgrounds.id, parsed.content.backgroundId),
-                    eq(panelBackgrounds.deprecated, false),
+                    eq(panelBackgrounds.id, parsed.content.background),
+                    eq(panelBackgrounds.disabled, false),
                 ),
                 columns: {
-                    url: true,
+                    id: true,
                     textColor: true,
                 },
             });
@@ -87,7 +87,7 @@ const validateCreatePanelDTO = async (
 
             content = {
                 content: parsed.content.content,
-                background: background.url,
+                background: background.id,
                 textColor: background.textColor,
             };
             break;
@@ -102,7 +102,7 @@ const validateCreatePanelDTO = async (
 };
 
 export const addPanel = async (createPanelDTO: CreatePanelDTO) => {
-    const user = await getSessionUserInfo(true);
+    const user = await getSessionUserInfo({ throwErrorOnInvalidSession: true });
 
     validateUser(user, {
         isSuspended: false,
@@ -112,12 +112,12 @@ export const addPanel = async (createPanelDTO: CreatePanelDTO) => {
     const { type, showFrom, showTill, content } =
         await validateCreatePanelDTO(createPanelDTO);
 
-    throw new Error(
-        JSON.stringify({
-            showFrom: showFrom.toLocaleString(),
-            showTill: showTill.toLocaleString(),
-        }),
-    );
+    // throw new Error(
+    //     JSON.stringify({
+    //         showFrom: showFrom.toLocaleString(),
+    //         showTill: showTill.toLocaleString(),
+    //     }),
+    // );
 
     const newThreadId = (
         await db
@@ -159,15 +159,25 @@ export const addPanel = async (createPanelDTO: CreatePanelDTO) => {
         },
     });
 
-    await fetch(env.BACKEND_URL + "/panels", { method: "POST" });
+    try {
+        await fetch(env.BACKEND_URL + "/panels", { method: "POST" });
+    } catch (e) {
+        console.error(e);
+    }
 
     return newThreadId;
 };
 
 export const getPanelBackgrounds = async (): Promise<PanelBackground[]> => {
-    await getSessionUserInfo(true);
+    const user = await getSessionUserInfo({ throwErrorOnInvalidSession: true });
+
+    validateUser(user, {
+        isAdmin: true,
+        throwError: true,
+    });
 
     return await db.query.panelBackgrounds.findMany({
-        where: eq(panelBackgrounds.deprecated, false),
+        where: eq(panelBackgrounds.disabled, false),
+        orderBy: asc(panelBackgrounds.id),
     });
 };

@@ -28,7 +28,12 @@ export const getThreadById = async (
       })
     | undefined
 > => {
-    const user = await getSessionUserInfo(true);
+    const user = await getSessionUserInfo({ throwErrorOnInvalidSession: true });
+
+    validateUser(user, {
+        isUser: true,
+        throwError: true,
+    });
 
     return (await db.query.threads.findFirst({
         where: and(eq(threads.owner, user.id), eq(threads.id, id)),
@@ -64,10 +69,10 @@ export const getThreadById = async (
 };
 
 export const sendMessage = async (threadId: number, message: string) => {
-    const user = await getSessionUserInfo(true);
+    const user = await getSessionUserInfo({ throwErrorOnInvalidSession: true });
 
     validateUser(user, {
-        isSuspended: false,
+        isUser: true,
         throwError: true,
     });
 

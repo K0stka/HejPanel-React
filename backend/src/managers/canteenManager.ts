@@ -34,8 +34,6 @@ export class CanteenManager extends Manager<Canteen> {
 	}
 
 	protected override async getCurrent(): Promise<Canteen | null> {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 
@@ -76,6 +74,15 @@ export class CanteenManager extends Manager<Canteen> {
 			}
 
 			if (fetchedCanteen.date === today) currentCanteen = existingCanteen ? existingCanteen : fetchedCanteen.canteen;
+		}
+
+		if (!currentCanteen) {
+			await db.insert(canteens).values({
+				date: today,
+				...this.emptyData,
+			});
+
+			newCanteens++;
 		}
 
 		printWrittenDataToDB(`canteen × ${newCanteens}`);

@@ -2,12 +2,12 @@
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CreatePanelDTO, addPanel } from "./actions";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useState } from "react";
 import { Variants, motion } from "framer-motion";
 
-import { AuthContext } from "@/auth/context";
 import { Button } from "@/components/ui/button";
 import { NextPage } from "next";
+import PageTemplate from "@/components/utility/PageTemplate";
 import { Panel } from "shared/types";
 import { Progress } from "@/components/ui/progress";
 import Spinner from "@/components/utility/Spinner";
@@ -28,8 +28,7 @@ interface CreateVideoPanelContentState {
 
 interface CreateTextPanelContentState {
     content: string;
-    backgroundId: number;
-    background: string;
+    background: number;
     textColor: string;
 }
 
@@ -44,8 +43,6 @@ export type CreatePanelContentState<T extends Panel["type"] | undefined> =
 
 const AddPanelPage: NextPage = () => {
     const router = useRouter();
-
-    const user = useContext(AuthContext);
 
     const [step, setStep] = useState(0);
     const [maxStep, setMaxStep] = useState(0);
@@ -83,8 +80,8 @@ const AddPanelPage: NextPage = () => {
             case "text":
                 panelContent = {
                     content: (content as CreateTextPanelContentState)?.content,
-                    backgroundId: (content as CreateTextPanelContentState)
-                        ?.backgroundId,
+                    background: (content as CreateTextPanelContentState)
+                        ?.background,
                 };
                 break;
         }
@@ -165,25 +162,28 @@ const AddPanelPage: NextPage = () => {
     return isSubmitting ? (
         <Spinner />
     ) : (
-        <div className="relative grid min-h-full w-full grid-rows-[auto_1fr] gap-5 p-10">
-            <div className="grid grid-cols-[auto,1fr,auto] items-center gap-5">
-                <Button
-                    variant="ghost"
-                    disabled={step === 0}
-                    onClick={prevStep}
-                >
-                    <ArrowLeft />
-                </Button>
-                <Progress value={(step / (steps.length - 1)) * 100} />
-                <Button
-                    variant="ghost"
-                    disabled={step === maxStep}
-                    onClick={nextStep}
-                >
-                    <ArrowRight />
-                </Button>
-            </div>
-            <div className="relative flex h-full w-full flex-col items-center justify-center">
+        <PageTemplate
+            title={
+                <div className="grid grid-cols-[auto,1fr,auto] items-center gap-5">
+                    <Button
+                        variant="ghost"
+                        disabled={step === 0}
+                        onClick={prevStep}
+                    >
+                        <ArrowLeft />
+                    </Button>
+                    <Progress value={(step / (steps.length - 1)) * 100} />
+                    <Button
+                        variant="ghost"
+                        disabled={step === maxStep}
+                        onClick={nextStep}
+                    >
+                        <ArrowRight />
+                    </Button>
+                </div>
+            }
+        >
+            <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden">
                 {steps.map((stepContent, index) => (
                     <motion.div
                         key={index}
@@ -202,7 +202,7 @@ const AddPanelPage: NextPage = () => {
                     </motion.div>
                 ))}
             </div>
-        </div>
+        </PageTemplate>
     );
 };
 

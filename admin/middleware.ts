@@ -6,7 +6,7 @@ import { getSessionUserRecord } from "./auth/session";
 // 1. Ignore certain paths
 export const config = {
     matcher: [
-        "/((?!api|static|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+        "/((?!api|static|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|icons|manifest.webmanifest).*)",
     ],
 };
 

@@ -29,7 +29,7 @@ const LoginFailedPage: NextPage = async () => {
                 <Button
                     onClick={login}
                     className="nunito text-1xl"
-                    variant="secondary"
+                    variant="outline"
                     size="lg"
                 >
                     <Microsoft className="h-10 w-10 shrink-0" />

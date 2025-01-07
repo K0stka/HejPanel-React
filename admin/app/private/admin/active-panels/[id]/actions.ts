@@ -28,7 +28,7 @@ export const getThreadById = async (
       })
     | undefined
 > => {
-    const user = await getSessionUserInfo();
+    const user = await getSessionUserInfo({ throwErrorOnInvalidSession: true });
 
     validateUser(user, {
         isAdmin: true,
@@ -69,10 +69,9 @@ export const getThreadById = async (
 };
 
 export const sendMessage = async (threadId: number, message: string) => {
-    const user = await getSessionUserInfo(true);
+    const user = await getSessionUserInfo({ throwErrorOnInvalidSession: true });
 
     validateUser(user, {
-        isSuspended: false,
         isAdmin: true,
         throwError: true,
     });

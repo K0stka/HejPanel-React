@@ -1,10 +1,15 @@
+"use client";
+
 import { Panel, PanelBackground, SetState } from "shared/types";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { CreatePanelContentState } from "../page";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { getPanelBackgroundUrl } from "@/lib/utils";
 import { getPanelBackgrounds } from "../actions";
 
 interface Step3Props<T extends Panel["type"]> {
@@ -64,11 +69,13 @@ const Step3 = ({
 export default Step3;
 
 const Step3Image = ({ content, setContent, nextStep }: Step3Props<"image">) => {
+    const isComplete = content && content.base64 && content.base64.length > 0;
+
     return (
         <>
             <h1 className="nunito text-2xl font-bold">Zvolte obrázek</h1>
             <Input
-                className="w-auto"
+                className="w-auto max-w-full"
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
@@ -84,19 +91,19 @@ const Step3Image = ({ content, setContent, nextStep }: Step3Props<"image">) => {
                     }
                 }}
             />
-            {content && content.base64 && (
-                <Button onClick={nextStep}>Další</Button>
-            )}
+            {isComplete && <Button onClick={nextStep}>Další</Button>}
         </>
     );
 };
 
 const Step3Video = ({ content, setContent, nextStep }: Step3Props<"video">) => {
+    const isComplete = content && content.base64 && content.base64.length > 0;
+
     return (
         <>
             <h1 className="nunito text-2xl font-bold">Zvolte video</h1>
             <Input
-                className="w-auto"
+                className="w-auto max-w-full"
                 type="file"
                 accept="video/*"
                 onChange={(e) => {
@@ -112,9 +119,7 @@ const Step3Video = ({ content, setContent, nextStep }: Step3Props<"video">) => {
                     }
                 }}
             />
-            {content && content.base64 && (
-                <Button onClick={nextStep}>Další</Button>
-            )}
+            {isComplete && <Button onClick={nextStep}>Další</Button>}
         </>
     );
 };
@@ -126,48 +131,60 @@ const Step3Text = ({ content, setContent, nextStep }: Step3Props<"text">) => {
         getPanelBackgrounds().then(setBackgrounds);
     }, []);
 
+    const isComplete =
+        content &&
+        content.content &&
+        content.content.length > 0 &&
+        content.background &&
+        content.background >= 0 &&
+        content.textColor &&
+        content.textColor.length > 0;
+
     return (
         <>
             <h1 className="nunito text-2xl font-bold">Zvolte obsah panelu</h1>
-            <>
-                <Textarea
-                    className="h-24 w-96 resize-none"
-                    onChange={(e) =>
-                        setContent((oldContent) => ({
-                            content: e.target.value,
-                            backgroundId: oldContent?.backgroundId ?? 0,
-                            background: oldContent?.background ?? "",
-                            textColor: oldContent?.textColor ?? "",
-                        }))
-                    }
-                />
-                <div className="flex max-w-96 flex-wrap justify-center gap-5">
-                    {backgrounds.map((background, i) => (
+            <Textarea
+                className="h-24 w-96 resize-none"
+                onChange={(e) =>
+                    setContent((oldContent) => ({
+                        content: e.target.value,
+                        background: oldContent?.background ?? -1,
+                        textColor: oldContent?.textColor ?? "",
+                    }))
+                }
+            />
+            <div className="flex max-w-96 flex-wrap justify-center gap-5">
+                {backgrounds.length > 0 ? (
+                    backgrounds.map((background, i) => (
                         <div
                             key={background.id + "-" + i}
-                            className={`size-16 cursor-pointer overflow-hidden rounded-md border-4 bg-secondary ${content?.background === background.url ? "border-primary" : "border-primary/10"}`}
+                            className={`size-16 cursor-pointer overflow-hidden rounded-md border-4 bg-secondary ${content?.background === background.id ? "border-primary" : "border-primary/10"}`}
                             onClick={() => {
                                 setContent((oldContent) => ({
                                     content: oldContent?.content ?? "",
-                                    backgroundId: background.id,
-                                    background: background.url,
+                                    background: background.id,
                                     textColor: background.textColor,
                                 }));
                             }}
                         >
-                            <img
-                                src={background.url}
+                            <Image
+                                alt=""
+                                width={64}
+                                height={64}
+                                src={getPanelBackgroundUrl(background.id)}
                                 className="h-full w-full object-cover"
                             />
                         </div>
-                    ))}
-                </div>
-            </>
-            {content &&
-                content.content &&
-                content.content.length > 0 &&
-                content.background &&
-                content.textColor && <Button onClick={nextStep}>Další</Button>}
+                    ))
+                ) : (
+                    <>
+                        <Skeleton className="size-16 rounded-md" />
+                        <Skeleton className="size-16 rounded-md" />
+                        <Skeleton className="size-16 rounded-md" />
+                    </>
+                )}
+            </div>
+            {isComplete && <Button onClick={nextStep}>Další</Button>}
         </>
     );
 };

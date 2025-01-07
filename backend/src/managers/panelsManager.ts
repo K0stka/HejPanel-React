@@ -24,6 +24,8 @@ export class PanelsManager extends Manager<DisplayPanel[]> {
 			for (const panel of newlyVisiblePanels) onAddPanel(panel);
 			for (const panel of newlyHiddenPanels) onRemovePanel(panel.id);
 		});
+
+		this.enabled = true;
 	}
 
 	protected override isStale = (lastUpdated: Date): boolean => {

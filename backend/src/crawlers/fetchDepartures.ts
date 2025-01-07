@@ -74,8 +74,6 @@ const fetchDeparturesFromURL = async (url: string, numberOfElements: number): Pr
 const FAKE_DATA = true;
 
 export default async function fetchDepartures(): Promise<Departures> {
-	await new Promise((resolve) => setTimeout(resolve, 1000));
-
 	const departures: Departures = FAKE_DATA
 		? {
 				ladova: [

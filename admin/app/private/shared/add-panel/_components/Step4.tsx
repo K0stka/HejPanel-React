@@ -39,7 +39,11 @@ const Step4 = ({
     return (
         <>
             <h1 className="nunito bold text-2xl">Rekapitulace</h1>
-            <PanelPreview type={type} content={panelContent} size={96} />
+            <PanelPreview
+                type={type}
+                content={panelContent}
+                className="w-96 max-w-full"
+            />
             <div className="flex items-center justify-center gap-5">
                 <DateInput value={showFrom} readOnly={true} />
                 -

@@ -1,8 +1,8 @@
 import { NextPage } from "next";
-import Spinner from "@/components/utility/Spinner";
+import PageTemplate from "@/components/utility/PageTemplate";
 
 const AdminDashboardPage: NextPage = async () => {
-  return <Spinner />;
+    return <PageTemplate title="Přehled">DateInput je broken</PageTemplate>;
 };
 
 export default AdminDashboardPage;

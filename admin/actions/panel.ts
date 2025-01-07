@@ -8,13 +8,13 @@ import { eq } from "shared/orm";
 import { panels } from "shared/schema";
 
 export const getPanelById = async (id: Panel["id"]): Promise<Panel> => {
-    const user = await getSessionUserInfo(true);
+    const user = await getSessionUserInfo({ throwErrorOnInvalidSession: true });
 
     const panel = (await db.query.panels.findFirst({
         where: eq(panels.id, id),
     })) as Panel | undefined;
 
-    if (validateUser(user, { isAdmin: false }) && panel?.author !== user.id)
+    if (!validateUser(user, { isAdmin: true }) && panel?.author !== user.id)
         throw new Error("Unauthorized");
 
     if (!panel) throw new Error("Panel not found");

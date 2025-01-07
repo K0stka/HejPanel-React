@@ -1,4 +1,4 @@
-import { Clapperboard, Image, LetterText } from "lucide-react";
+import { Clapperboard, ImageIcon, LetterText } from "lucide-react";
 import { Panel, SetState } from "shared/types";
 
 import { Card } from "@/components/ui/card";
@@ -50,11 +50,11 @@ const Step1 = ({ type, setType, setContent, nextStep }: Step1Props) => {
     return (
         <>
             <h1 className="nunito text-2xl font-bold">Zvolte typ panelu</h1>
-            <div className="flex gap-5">
+            <div className="flex flex-wrap justify-center gap-5">
                 <PanelTypeButton
                     type="image"
                     name="Obrázek"
-                    icon={<Image className="size-24" />}
+                    icon={<ImageIcon className="size-24" />}
                     selectedType={type}
                 />
                 <PanelTypeButton

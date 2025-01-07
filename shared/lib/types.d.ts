@@ -7,7 +7,6 @@ export type User = {
 	name: string;
 	email: string;
 	type: (typeof userTypes)[number];
-	suspended: boolean;
 };
 
 export type PanelThread = {
@@ -134,7 +133,7 @@ export type TextPanel = BasePanel & {
 	type: "text";
 	content: {
 		content: string;
-		background: PanelBackground["url"];
+		background: PanelBackground["id"];
 		textColor: PanelBackground["textColor"];
 	};
 };
@@ -160,8 +159,9 @@ export type DisplayPanel = {
 
 export type PanelBackground = {
 	id: number;
-	url: string;
+	fileName: string;
 	textColor: string;
+	disabled: boolean;
 };
 
 export type Canteen = {

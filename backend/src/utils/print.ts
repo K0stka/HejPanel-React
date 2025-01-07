@@ -51,5 +51,13 @@ export const printClearedCache = (dataDescription: string) => printMessage("🗑
 export const printHydratedData = (...dataDescription: string[]) => printMessage("🌊", brightBlue("Hydrated"), dataDescription.map((e) => bold(underline(e))).join(", "));
 export const printSentDataToUID = (UID: string, ...dataDescription: string[]) => printMessage("📨", brightYellow("Sent"), dataDescription.map((e) => bold(underline(e))).join(", "), gray(`to [UID:${UID}]`));
 
-export const printRestartingSync = () => printMessage("🌅", brightYellow("Starting background synchronization tasks..."));
-export const printSuspendingSync = () => printMessage("🌙", brightYellow("Suspending background synchronization tasks to preserve resources..."));
+export const printRestartingSync = () => {
+	console.log();
+	printMessage("🌅", brightYellow("Starting background synchronization tasks..."));
+	console.log();
+};
+export const printSuspendingSync = () => {
+	console.log();
+	printMessage("🌙", brightYellow("Suspending background synchronization tasks to preserve resources..."));
+	console.log();
+};

@@ -28,6 +28,8 @@ export class ConfigurationManager extends Manager<Configuration> {
 
 			await Promise.all(promises);
 		});
+
+		this.enabled = true;
 	}
 
 	protected override isStale = () => false;

@@ -1,20 +1,47 @@
+import { ButtonProps } from "../ui/button";
+import PageTemplateTitle from "./PageTemplateTitle";
+import { cn } from "@/lib/utils";
+
 interface PageTemplateProps {
-    title?: string;
+    title?: React.ReactNode;
     children?: React.ReactNode;
+    actions?: {
+        id: string;
+        text: string;
+        icon?: React.ReactNode;
+        onClick: () => void;
+        props?: ButtonProps;
+    }[];
+    footer?: React.ReactNode;
 }
 
-const PageTemplate = ({ title, children }: PageTemplateProps) => {
+const PageTemplate = ({
+    title,
+    children,
+    actions,
+    footer,
+}: PageTemplateProps) => {
     return (
         <div
-            className={
-                "relative box-border h-screen p-10" +
-                (title ? " grid grid-rows-[auto,1fr] gap-5" : "")
-            }
+            className={cn(
+                "relative box-border grid min-h-dvh gap-5 overflow-y-auto md:h-dvh md:overflow-y-hidden md:p-10",
+                {
+                    "grid-rows-[auto,1fr]": !!title && !footer,
+                    "grid-rows-[auto,1fr,auto]": !!title && !!footer,
+                    "grid-rows-[1fr,auto]": !title && !!footer,
+                    "grid-rows-1fr": !title && !footer,
+                },
+            )}
         >
             {title && (
-                <h1 className="nunito mb-2 text-3xl font-bold">{title}</h1>
+                <h1 className="nunito flex items-center justify-between p-5 pb-0 text-3xl font-bold md:mb-2 md:p-0">
+                    <PageTemplateTitle title={title} actions={actions} />
+                </h1>
             )}
-            <div className="h-full overflow-y-auto">{children}</div>
+            <div className="relative px-5 pb-5 md:h-full md:overflow-y-auto md:p-0">
+                {children}
+            </div>
+            {footer && <div>{footer}</div>}
         </div>
     );
 };

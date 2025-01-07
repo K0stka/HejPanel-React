@@ -19,6 +19,16 @@ const DateInput: React.FC<DateInputProps> = ({
     onChange = () => {},
     readOnly,
 }) => {
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const debouncedOnChange = (date: Date) => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+        timeoutRef.current = setTimeout(() => {
+            onChange(date);
+            timeoutRef.current = null;
+        }, 50);
+    };
+
     const [date, setDateState] = React.useState<DateParts>(() => {
         const d = value ? new Date(value) : new Date();
         return {
@@ -73,16 +83,18 @@ const DateInput: React.FC<DateInputProps> = ({
             const isValid =
                 typeof newValue === "number" && validateDate(field, newValue);
 
+            if (!isValid && newValue !== "") return;
+
             // If the new value is valid, update the date
             const newDate = { ...date, [field]: newValue };
+
             setDate(newDate);
 
             // only call onChange when the entry is valid
-            if (isValid) {
-                onChange(
+            if (isValid)
+                debouncedOnChange(
                     new Date(newDate.year, newDate.month - 1, newDate.day),
                 );
-            }
         };
 
     const initialDate = useRef<DateParts>(date);
@@ -98,12 +110,10 @@ const DateInput: React.FC<DateInputProps> = ({
             const newValue = Number(e.target.value);
             const isValid = validateDate(field, newValue);
 
-            if (!isValid) {
-                setDate(initialDate.current);
-            } else {
-                // If the new value is valid, update the initial value
-                initialDate.current = { ...date, [field]: newValue };
-            }
+            // If the new value is valid, update the initial value
+            if (isValid) initialDate.current = { ...date, [field]: newValue };
+
+            setDate(initialDate.current);
         };
 
     const handleKeyDown =
@@ -165,7 +175,7 @@ const DateInput: React.FC<DateInputProps> = ({
                 }
 
                 setDate(newDate);
-                onChange(
+                debouncedOnChange(
                     new Date(newDate.year, newDate.month - 1, newDate.day),
                 );
             } else if (e.key === "ArrowDown") {
@@ -206,7 +216,7 @@ const DateInput: React.FC<DateInputProps> = ({
                 }
 
                 setDate(newDate);
-                onChange(
+                debouncedOnChange(
                     new Date(newDate.year, newDate.month - 1, newDate.day),
                 );
             }
@@ -220,8 +230,8 @@ const DateInput: React.FC<DateInputProps> = ({
                             e.currentTarget.value.length)
                 ) {
                     e.preventDefault();
-                    if (field === "month") dayRef.current?.focus();
-                    if (field === "day") yearRef.current?.focus();
+                    if (field === "day") monthRef.current?.focus();
+                    if (field === "month") yearRef.current?.focus();
                 }
             } else if (e.key === "ArrowLeft") {
                 if (
@@ -231,8 +241,8 @@ const DateInput: React.FC<DateInputProps> = ({
                             e.currentTarget.value.length)
                 ) {
                     e.preventDefault();
-                    if (field === "day") monthRef.current?.focus();
-                    if (field === "year") dayRef.current?.focus();
+                    if (field === "year") monthRef.current?.focus();
+                    if (field === "month") dayRef.current?.focus();
                 }
             }
         };

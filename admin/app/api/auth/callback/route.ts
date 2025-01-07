@@ -89,7 +89,6 @@ export async function GET(req: NextRequest) {
             name: userInfo.displayName,
             email: userInfo.mail,
             type: "user",
-            suspended: false,
         };
     }
 

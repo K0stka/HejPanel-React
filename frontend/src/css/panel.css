@@ -79,6 +79,7 @@ main {
 
 					.panel-text {
 						z-index: 1;
+						white-space: pre-wrap;
 					}
 				}
 
@@ -134,10 +135,6 @@ main {
 		&.dark {
 			background: var(--text);
 			color: var(--background);
-
-			.logo-container svg * {
-				fill: var(--secondary);
-			}
 
 			.clock {
 				color: var(--secondary);

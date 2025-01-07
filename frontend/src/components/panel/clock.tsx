@@ -89,6 +89,12 @@ const Clock = () => {
 
 	const updateCurrentTimetable = () => {
 		const now = new Date();
+
+		if (now.getDay() === 0 || now.getDay() === 6) {
+			setTimetable(null);
+			return;
+		}
+
 		const milTime = now.getHours() * 100 + now.getMinutes();
 
 		for (let i = 0; i < timetable_lookup.length; i++)

@@ -1,17 +1,8 @@
 import { NextPage } from "next";
-import { getSessionUserInfo } from "@/auth/session-utils";
+import PageTemplate from "@/components/utility/PageTemplate";
 
-const TestPage: NextPage = async () => {
-    const user = await getSessionUserInfo();
-
-    return (
-        <>
-            <h1>Test</h1>
-            <p>
-                {user.name} ({user.email})
-            </p>
-        </>
-    );
+const MainPage: NextPage = async () => {
+    return <PageTemplate title="Přehled" />;
 };
 
-export default TestPage;
+export default MainPage;

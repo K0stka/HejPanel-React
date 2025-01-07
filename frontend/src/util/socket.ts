@@ -1,15 +1,10 @@
 import { Canteen, ClientState, Departures, Panel, Theme } from "shared";
 import { useEffect, useState } from "react";
 
+import { env } from "../../env.ts";
 import { io } from "socket.io-client";
 
-// const DEV: boolean = true;
-
-// const URL = DEV ? "http://localhost:5050" : "http://194.182.86.61:5050";
-
-const URL = "http://192.168.137.1:5050";
-
-export const socket = io(URL);
+export const socket = io(env.WS_URL);
 
 export default function useSocket(): ClientState {
 	const [online, setOnline] = useState(socket.connected);
@@ -34,7 +29,7 @@ export default function useSocket(): ClientState {
 	const [departures, setDepartures] = useState<Departures>({
 		ladova: [],
 		natrati: [],
-		vlak: null,
+		vlak: [],
 	});
 
 	useEffect(() => {

@@ -1,9 +1,18 @@
 import { printReadDataFromCache } from "../utils/print.ts";
 
+interface RefreshOptions {
+	suppressHydration?: boolean;
+	ignoreNotStale?: boolean;
+	ignoreNotEnabled?: boolean;
+}
+
 export abstract class Manager<T> {
 	protected abstract get dataName(): string;
 
 	private _enabled: boolean = false;
+	public set enabled(value: boolean) {
+		this._enabled = value;
+	}
 
 	private _data: T | null = null;
 	protected abstract get emptyData(): T;
@@ -30,30 +39,38 @@ export abstract class Manager<T> {
 	}
 
 	public async init(): Promise<void> {
-		this._enabled = true;
-		await this.refresh(true);
+		await this.refresh({
+			suppressHydration: true,
+		});
 	}
 
 	public async tick(): Promise<void> {
 		await this.refresh();
 	}
 
-	public async forceRefresh(): Promise<void> {
-		await this.refresh(false, true);
+	public async dataSourceChanged(): Promise<void> {
+		await this.refresh({
+			ignoreNotStale: true,
+		});
 	}
 
 	public async enable(): Promise<void> {
-		await this.refresh(false, true);
+		await this.refresh({
+			ignoreNotEnabled: true,
+		});
+
 		this._enabled = true;
 	}
 
 	public async disable(): Promise<void> {
 		this._enabled = false;
+
 		await this._onUpdateCallback(this._data ?? this.emptyData, this.emptyData);
 	}
 
-	private async refresh(suppressHydration: boolean = false, forceUpdate: boolean = false): Promise<void> {
-		if (!forceUpdate && (!this._isStale || !this._enabled)) return;
+	private async refresh({ suppressHydration, ignoreNotEnabled, ignoreNotStale }: RefreshOptions = {}): Promise<void> {
+		if (!this._enabled && !ignoreNotEnabled) return;
+		if (!this._isStale && !ignoreNotStale) return;
 
 		const oldData = this._data ?? this.emptyData;
 		const newData = (await this.getCurrent()) ?? this.emptyData;

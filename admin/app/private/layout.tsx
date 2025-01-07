@@ -13,10 +13,10 @@ const Layout: NextLayout = async ({ children }) => {
     return (
         <AuthProvider user={user}>
             <SidebarProvider>
-                <Sidebar NotificationsElement={notifications} />
-                <main className="h-screen w-full overflow-hidden">
-                    {children}
-                </main>
+                {user.type !== "suspended" && (
+                    <Sidebar NotificationsElement={notifications} />
+                )}
+                <main className="h-dvh w-full overflow-hidden">{children}</main>
             </SidebarProvider>
         </AuthProvider>
     );
