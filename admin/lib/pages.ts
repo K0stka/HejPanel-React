@@ -3,14 +3,13 @@ import {
     Grip,
     ImageIcon,
     ImagePlus,
-    LucideProps,
+    LucideIcon,
     Settings2,
     Shield,
     UsersRound,
     Utensils,
     Wallpaper,
 } from "lucide-react";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 import { User } from "shared/types";
 
@@ -20,9 +19,7 @@ type PageInfo = {
     extendable?: true;
     file: string;
     showInSidebar?: true;
-    icon?: ForwardRefExoticComponent<
-        Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-    >;
+    icon?: LucideIcon;
 };
 
 export const getPages = (userType: User["type"]): PageInfo[] => {

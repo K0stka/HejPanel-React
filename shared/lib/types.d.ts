@@ -1,5 +1,5 @@
 import { userTypes, activityTypes, panelTypes, themes } from "./constants.ts";
-import type { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 export type User = {
 	id: number;
@@ -222,3 +222,7 @@ export type Only<T, U> = {
 export type Either<T, U> = Only<T, U> | Only<U, T>;
 
 export type SetState<T> = Dispatch<SetStateAction<T>>;
+
+export type FunctionDetails<F> = F extends (...args: infer Args) => infer Result ? { args: Args; result: Result } : never;
+
+export type AsyncFunctionDetails<F> = F extends (...args: infer Args) => Promise<infer Result> ? { args: Args; result: Result } : never;
