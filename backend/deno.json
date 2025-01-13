@@ -12,6 +12,7 @@
 		"shared/schema": "../shared/db/schema.ts",
 		"orm": "../shared/db/orm.ts",
 		"drizzle-orm": "npm:drizzle-orm",
-		"pg": "npm:pg"
+		"pg": "npm:pg",
+		"react": "npm:react@^19.0.0"
 	}
 }
