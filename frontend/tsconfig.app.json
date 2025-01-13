@@ -25,5 +25,5 @@
 			"shared": ["../shared/lib/types", "../shared/lib/constants"]
 		}
 	},
-	"include": ["src", "env.ts"]
+	"include": ["env.ts"] //["src", "env.ts"]
 }
